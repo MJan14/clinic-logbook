@@ -8,7 +8,6 @@
     <style>
         /* --- LUXURY EMERALD THEME VARIABLES --- */
         :root {
-            /* Backgrounds: Pure Dark Greens (No Gray) */
             --bg-color: #011c16;        /* Deepest Jungle Green */
             --card-bg: #022c22;         /* Darker Emerald */
             --card-glass: rgba(2, 44, 34, 0.95); /* High opacity to hide gray behind */
@@ -48,7 +47,8 @@
             overflow-x: hidden;
         }
 
-        .main-container { width: 100%; max-width: 1400px; display: flex; flex-direction: column; }
+        .main-container { width: 100%; max-width: 1400px; display: flex; flex-direction: column; filter: blur(5px); transition: filter 0.5s; pointer-events: none; }
+        .main-container.unlocked { filter: none; pointer-events: auto; }
 
         /* --- HEADER --- */
         header { text-align: center; margin-bottom: 30px; margin-top: 15px; position: relative; }
@@ -180,8 +180,10 @@
         .export-btn:hover { background-color: var(--primary-color); color: #011c16; }
 
         /* --- MODALS --- */
-        #edit-modal, #login-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
-        .edit-content, .modal-content { background: #032f26; padding: 40px; border-radius: 24px; border: 1px solid var(--border-color); width: 90%; max-width: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); position: relative; text-align: center; }
+        #edit-modal, #login-modal, #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        #lock-screen { display: flex; z-index: 5000; background: #011c16; opacity: 1; }
+        
+        .edit-content, .modal-content, .lock-content { background: #032f26; padding: 40px; border-radius: 24px; border: 1px solid var(--border-color); width: 90%; max-width: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); position: relative; text-align: center; }
         .close-edit { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; }
         .visit-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
         .visit-info { flex: 1; font-size: 0.9rem; color: var(--text-main); }
@@ -244,6 +246,18 @@
     </style>
 </head>
 <body>
+
+    <!-- LOCK SCREEN -->
+    <div id="lock-screen">
+        <div class="lock-content">
+            <div style="font-size: 3rem; margin-bottom: 20px;">🔒</div>
+            <h2 style="color: var(--text-main); font-family: 'Playfair Display', serif;">Clinica Aesthetico</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Security System Active</p>
+            <input type="password" id="site-pin" placeholder="Enter Access PIN" maxlength="6" inputmode="numeric" style="text-align: center; margin-bottom: 20px;">
+            <button class="submit-btn" onclick="checkSiteAccess()">Unlock</button>
+            <p id="lock-error" style="color: var(--error-color); display: none; margin-top: 10px;">Incorrect PIN</p>
+        </div>
+    </div>
 
     <!-- LOGIN MODAL -->
     <div id="login-modal" style="display: none;">
@@ -420,6 +434,21 @@
         let sessionId = localStorage.getItem('clinica_session_id') || crypto.randomUUID(); 
         localStorage.setItem('clinica_session_id', sessionId);
         let currentEditName = null;
+        
+        // --- SECURITY PIN ---
+        const ADMIN_PIN = "1234"; // Default PIN
+
+        // --- SITE LOCK ---
+        window.checkSiteAccess = function() {
+            const input = document.getElementById('site-pin').value;
+            if (input === ADMIN_PIN) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.querySelector('.main-container').classList.add('unlocked');
+                checkUserIdentity(); // Start normal app flow
+            } else {
+                document.getElementById('lock-error').style.display = 'block';
+            }
+        }
 
         function checkUserIdentity() {
             const savedName = localStorage.getItem('clinica_user_name');
@@ -480,7 +509,7 @@
         document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
         
         initYearSelector();
-        checkUserIdentity();
+        // checkUserIdentity(); // Moved to checkSiteAccess
 
         window.switchTab = switchTab;
         window.clearPatientYear = clearPatientYear;
@@ -671,6 +700,7 @@
         }
 
         async function clearPatientYear(patientName) {
+            if(prompt("Enter Admin PIN to Clear:") !== ADMIN_PIN) { alert("Wrong PIN."); return; }
             if (!db || !confirm(`Clear ONLY ${selectedYear} entries for "${patientName}"?`)) return;
             const toDelete = allConsultations.filter(rec => {
                 if (rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()) return false;
@@ -689,6 +719,7 @@
         }
 
         async function deletePatientFully(patientName) {
+            if(prompt("Enter Admin PIN to Delete:") !== ADMIN_PIN) { alert("Wrong PIN."); return; }
             if (!db || !confirm(`⚠️ DELETE "${patientName}"? Moves to History.`)) return;
             const toMove = allConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
@@ -701,6 +732,7 @@
         }
 
         async function restorePatient(patientName) {
+            if(prompt("Enter Admin PIN to Restore:") !== ADMIN_PIN) { alert("Wrong PIN."); return; }
             if (!db || !confirm(`Restore "${patientName}"?`)) return;
             const toRestore = archivedConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
@@ -713,6 +745,7 @@
         }
 
         async function deleteFromHistory(patientName) {
+            if(prompt("Enter Admin PIN to Delete Forever:") !== ADMIN_PIN) { alert("Wrong PIN."); return; }
             if (!db || !confirm(`PERMANENTLY DELETE "${patientName}"?`)) return;
             const toDelete = archivedConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
