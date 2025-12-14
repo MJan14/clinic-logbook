@@ -21,7 +21,7 @@
             --success-color: #34d399;
             --error-color: #ef4444;
             --danger-bg: #7f1d1d;
-            --danger-hover: #b91c1c;
+            --warning-color: #f59e0b; /* Amber for Clear */
         }
 
         * { box-sizing: border-box; }
@@ -37,7 +37,7 @@
             min-height: 100vh;
         }
 
-        .main-container { width: 100%; max-width: 1200px; }
+        .main-container { width: 100%; max-width: 1200px; display: flex; flex-direction: column; }
 
         header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
         header h1 { font-size: 2rem; margin: 0; color: var(--primary-color); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
@@ -64,13 +64,13 @@
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
 
-        button {
+        button.submit-btn {
             background-color: var(--primary-color); color: white; border: none;
             padding: 12px 25px; border-radius: 6px; font-weight: 600; cursor: pointer;
             transition: background-color 0.2s, transform 0.1s; height: 46px;
         }
-        button:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
-        button:active { transform: translateY(0); }
+        button.submit-btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+        button.submit-btn:active { transform: translateY(0); }
 
         .message { margin-top: 15px; font-size: 0.9rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
 
@@ -101,20 +101,59 @@
             color: var(--primary-hover); border-left: 1px solid var(--border-color);
         }
 
-        /* Action Column Styles */
-        .delete-btn {
-            background-color: transparent; color: var(--error-color); border: 1px solid var(--border-color);
-            padding: 6px 12px; font-size: 0.75rem; height: auto; opacity: 0.8;
-            transition: all 0.2s; cursor: pointer; border-radius: 4px;
-        }
-        .delete-btn:hover { background-color: var(--danger-bg); color: white; border-color: var(--danger-bg); opacity: 1; }
-        
         td:not(:first-child):not(.total-col):not(:last-child) { text-align: center; color: var(--text-muted); }
         td.zero-value { opacity: 0.3; }
 
+        /* --- ACTION BUTTONS CSS --- */
+        .action-cell {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-start;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid;
+            background: transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        /* Clear Button (Amber) */
+        .btn-clear {
+            color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        .btn-clear:hover {
+            background-color: var(--warning-color);
+            color: #0f172a; /* Dark text on hover */
+        }
+
+        /* Delete Button (Red) */
+        .btn-delete {
+            color: var(--error-color);
+            border-color: var(--error-color);
+        }
+        .btn-delete:hover {
+            background-color: var(--error-color);
+            color: white;
+        }
+        
+        footer {
+            margin-top: auto;
+            padding-top: 20px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
         @media (max-width: 600px) {
             #consultation-form { flex-direction: column; align-items: stretch; }
-            button { width: 100%; }
+            button.submit-btn { width: 100%; }
+            .action-cell { flex-direction: column; }
         }
     </style>
 </head>
@@ -138,7 +177,7 @@
                     <input type="date" id="consultation-date" required>
                 </div>
                 
-                <button type="submit">Add Entry</button>
+                <button type="submit" class="submit-btn">Add Entry</button>
             </form>
             <div id="message" class="message"></div>
         </section>
@@ -164,6 +203,10 @@
                 </table>
             </div>
         </section>
+        
+        <footer>
+            Made by Alexa Dela Torre
+        </footer>
     </div>
 
     <script>
@@ -221,40 +264,54 @@
             renderLogbook();
         }
 
-        // --- CLEAR FUNCTION (Global Scope) ---
-        function clearPatientRecords(patientName) {
-            if (!confirm(`Are you sure you want to clear ALL ${currentYear} entries for "${patientName}"?\n\nThis cannot be undone.`)) {
+        // --- ACTION 1: CLEAR YEAR (Removes 2025 entries only) ---
+        function clearPatientYear(patientName) {
+            if (!confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?\n\nOlder records will be kept.`)) {
                 return;
             }
 
             const initialCount = allConsultations.length;
 
-            // Keep records that DO NOT match (Name == target AND Year == currentYear)
-            const updatedList = allConsultations.filter(rec => {
+            // Keep records that are NOT (Name match AND Year match)
+            allConsultations = allConsultations.filter(rec => {
                 const recName = rec.name.trim().toUpperCase();
                 const targetName = patientName.trim().toUpperCase();
-                
-                // Safe date parsing
                 let recYear;
-                try {
-                    recYear = new Date(rec.date + 'T00:00:00').getFullYear();
-                } catch(e) {
-                    return true; // Keep malformed records safely
-                }
+                try { recYear = new Date(rec.date + 'T00:00:00').getFullYear(); } catch(e) { return true; }
 
-                const isMatch = (recName === targetName && recYear === currentYear);
-                return !isMatch; // If match, return false (remove it)
+                // If name and year match, filter it OUT (return false)
+                return !(recName === targetName && recYear === currentYear);
             });
 
-            if (updatedList.length === initialCount) {
-                alert("No records found to delete for this year.");
+            if (allConsultations.length === initialCount) {
+                alert("No records found to clear for this year.");
                 return;
             }
 
-            allConsultations = updatedList;
             saveData();
             renderLogbook();
-            alert(`Entries cleared for ${patientName}.`);
+        }
+
+        // --- ACTION 2: DELETE NAME (Removes EVERYTHING for this person) ---
+        function deletePatientFully(patientName) {
+            if (!confirm(`⚠️ PERMANENTLY DELETE "${patientName}"?\n\nThis will remove ALL records for this patient from ALL years.\nThis cannot be undone.`)) {
+                return;
+            }
+
+            const initialCount = allConsultations.length;
+
+            // Remove anything matching the name, regardless of year
+            allConsultations = allConsultations.filter(rec => 
+                rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()
+            );
+
+            if (allConsultations.length === initialCount) {
+                alert("No records found for this patient.");
+                return;
+            }
+
+            saveData();
+            renderLogbook();
         }
 
         // --- RENDER LOGIC ---
@@ -326,16 +383,26 @@
                 // Total
                 const totalCell = row.insertCell(); totalCell.textContent = summary.total; totalCell.classList.add('total-col');
 
-                // Action Button
+                // Actions Column (Now with TWO buttons)
                 const actionCell = row.insertCell();
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'action-cell';
+
+                // Button 1: Clear Year
                 const clearBtn = document.createElement('button');
-                clearBtn.textContent = "Clear";
-                clearBtn.className = "delete-btn";
-                // Attach Event Listener directly
-                clearBtn.onclick = function() {
-                    clearPatientRecords(nameKey);
-                };
-                actionCell.appendChild(clearBtn);
+                clearBtn.textContent = "Clear Year";
+                clearBtn.className = "action-btn btn-clear";
+                clearBtn.onclick = function() { clearPatientYear(nameKey); };
+
+                // Button 2: Delete Name
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = "Delete Name";
+                deleteBtn.className = "action-btn btn-delete";
+                deleteBtn.onclick = function() { deletePatientFully(nameKey); };
+
+                btnContainer.appendChild(clearBtn);
+                btnContainer.appendChild(deleteBtn);
+                actionCell.appendChild(btnContainer);
             });
         }
     </script>
