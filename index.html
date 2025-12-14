@@ -542,13 +542,15 @@
 
             updatePresence();
             
-            // Check view permissions immediately
+            // Re-check view permissions immediately
             const historyTab = document.getElementById('history-view');
             if (historyTab.style.display === 'block') {
                 checkHistoryAccess();
             }
             
+            // Force re-render of both tables with new permissions
             renderLogbook(); 
+            renderHistory();
         }
 
         window.changeUser = async function() {
@@ -701,6 +703,7 @@
             
             if (tabName === 'history') {
                 checkHistoryAccess();
+                renderHistory(); // Refresh to show buttons if owner
             }
         }
 
