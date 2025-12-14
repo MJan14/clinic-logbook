@@ -6,22 +6,32 @@
     <title>Clinica Aesthetico Logbook</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <style>
-        /* --- LUXURY DARK THEME VARIABLES --- */
+        /* --- LUXURY EMERALD THEME VARIABLES --- */
         :root {
-            --bg-color: #022c22;        /* Deepest Jungle Green */
-            --card-bg: #064e3b;         /* Rich Emerald */
-            --card-glass: rgba(6, 78, 59, 0.7); /* Glassy Emerald */
-            --primary-color: #10b981;   /* Bright Emerald Accent */
-            --primary-hover: #34d399;
-            --text-main: #ecfdf5;       /* Mint White */
-            --text-muted: #6ee7b7;      /* Soft Mint */
-            --border-color: rgba(16, 185, 129, 0.2); /* Subtle Green Border */
-            --input-bg: rgba(2, 44, 34, 0.6);
-            --header-bg: rgba(2, 44, 34, 0.8);
-            --total-col-bg: rgba(6, 95, 70, 0.6);
+            /* Backgrounds: deeply saturated greens, no murky grays */
+            --bg-color: #011c16;        /* Almost black green */
+            --card-bg: #032f26;         /* Deep Forest Green */
+            --card-glass: rgba(3, 47, 38, 0.85); /* High opacity for better contrast */
+            
+            /* Primary Accents */
+            --primary-color: #10b981;   /* Emerald */
+            --gold-accent: #d4af37;     /* Gold for borders/text */
+            
+            /* Text Colors */
+            --text-main: #f0fdf4;       /* Crisp White-Green */
+            --text-muted: #86efac;      /* Bright Mint (readable against dark) */
+            
+            /* Borders & Inputs */
+            --border-color: rgba(16, 185, 129, 0.3); 
+            --input-bg: #01221b;        /* Darker than card, distinct from bg */
+            
+            /* Table Colors */
+            --header-bg: #064e3b;       /* Solid dark green, not gray-transparent */
+            --total-col-bg: #065f46;
+            
+            /* Status Colors */
             --success-color: #34d399;
             --error-color: #fb7185;
-            --danger-bg: #be123c;
             --warning-color: #fbbf24;
         }
 
@@ -30,8 +40,8 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 20%),
-                              radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 20%);
+            /* Subtle premium gradient */
+            background-image: linear-gradient(to bottom right, #011c16, #022c22);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
@@ -46,8 +56,8 @@
         /* --- HEADER AREA --- */
         header { 
             text-align: center; 
-            margin-bottom: 30px; 
-            margin-top: 10px; 
+            margin-bottom: 35px; 
+            margin-top: 15px; 
             position: relative; 
         }
         
@@ -56,243 +66,258 @@
             font-size: 4.5rem; 
             font-weight: 700;
             margin: 0;
-            background: linear-gradient(to bottom right, #facc15, #fef08a, #d4af37, #b45309);
+            /* Gold Gradient Title */
+            background: linear-gradient(to bottom right, #fde047, #d4af37, #b45309);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -1px;
-            text-shadow: 0px 10px 20px rgba(0,0,0,0.5);
+            filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.5));
             line-height: 1.1;
-            padding-bottom: 5px; /* Space for descender shadow */
+            padding-bottom: 10px;
         }
 
         .app-title {
-            font-size: 0.95rem; color: var(--text-muted); margin-top: 5px;
-            letter-spacing: 4px; text-transform: uppercase; font-weight: 600; opacity: 0.8;
+            font-size: 0.9rem; color: var(--text-muted); margin-top: 0px;
+            letter-spacing: 4px; text-transform: uppercase; font-weight: 600; opacity: 0.9;
             display: flex; justify-content: center; align-items: center; gap: 15px;
         }
 
         /* --- TOP RIGHT PROFILE CORNER --- */
         .profile-corner {
-            position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 8px;
+            position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 10px;
         }
 
         .profile-pill {
-            background-color: rgba(6, 78, 59, 0.4);
+            background-color: rgba(6, 78, 59, 0.6);
             border: 1px solid var(--border-color);
             backdrop-filter: blur(4px);
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-main);
-            display: flex; align-items: center; gap: 6px;
+            display: flex; align-items: center; gap: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
         
         .profile-pill:hover {
-            background-color: rgba(16, 185, 129, 0.2);
+            background-color: var(--primary-color);
+            color: #022c22;
             border-color: var(--primary-color);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
         .pulse-dot {
-            width: 6px; height: 6px; background-color: #4ade80; border-radius: 50%;
+            width: 8px; height: 8px; background-color: #4ade80; border-radius: 50%;
             box-shadow: 0 0 8px #4ade80; animation: pulse 2s infinite;
         }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         #status-indicator { 
-            font-size: 0.7rem; color: var(--text-muted); font-weight: normal;
-            background: rgba(0,0,0,0.3); padding: 3px 10px; border-radius: 12px;
-            letter-spacing: 0.5px;
+            font-size: 0.75rem; color: var(--text-main); font-weight: 500;
+            background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 12px;
+            letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.1);
         }
 
         /* --- TABS --- */
-        .tabs-container { display: flex; justify-content: center; gap: 12px; margin-bottom: 25px; }
+        .tabs-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
         
         .tab-btn {
             background: transparent; color: var(--text-muted); 
-            border: 1px solid transparent; /* Cleaner look */
-            padding: 10px 24px; border-radius: 30px; 
+            border: 1px solid var(--border-color); 
+            padding: 12px 28px; border-radius: 30px; 
             cursor: pointer; font-weight: 500; transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif; font-size: 0.9rem;
+            font-family: 'Inter', sans-serif; font-size: 0.95rem;
             position: relative; overflow: hidden;
         }
         
-        .tab-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
+        .tab-btn:hover { background: rgba(16, 185, 129, 0.1); color: var(--text-main); border-color: var(--primary-color); }
         
         .tab-btn.active {
-            background: linear-gradient(135deg, var(--primary-color), #059669);
-            color: #ffffff;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            font-weight: 600;
+            background: var(--primary-color);
+            color: #011c16;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+            font-weight: 700;
         }
 
         /* --- CARDS & CONTENT --- */
-        .view-section { display: none; width: 100%; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .view-section { display: none; width: 100%; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .view-section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .card {
             background: var(--card-glass);
-            border-radius: 20px; /* Softer corners */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            padding: 25px; margin-bottom: 25px; 
-            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            padding: 35px; margin-bottom: 30px; 
+            border: 1px solid rgba(255,255,255,0.05);
             width: 100%; overflow: hidden;
         }
 
-        /* Input Styling */
-        #consultation-form { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
+        /* Input Styling - Removing the Gray! */
+        #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         .form-group label { 
-            display: block; font-size: 0.7rem; font-weight: 700; margin-bottom: 8px; 
+            display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; 
             color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; 
         }
         
         input, select {
-            width: 100%; padding: 14px 16px; 
+            width: 100%; padding: 16px 20px; 
             background-color: var(--input-bg);
             border: 1px solid var(--border-color); 
-            border-radius: 12px; font-size: 1rem; color: var(--text-main); 
-            transition: all 0.2s; outline: none;
+            border-radius: 16px; font-size: 1rem; color: var(--text-main); 
+            transition: all 0.3s; outline: none;
             font-family: 'Inter', sans-serif;
         }
         input:focus, select:focus { 
             border-color: var(--primary-color); 
-            background-color: rgba(2, 44, 34, 0.9);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); 
+            background-color: #011812;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); 
         }
+        
+        /* Fix for gray placeholder text */
+        ::placeholder { color: rgba(236, 253, 245, 0.3); }
 
         button.submit-btn {
             background: linear-gradient(135deg, var(--primary-color), #059669); color: white; border: none;
-            padding: 0 30px; border-radius: 12px; font-weight: 600; cursor: pointer; 
-            transition: all 0.2s; height: 50px; /* Matches input height perfectly */
+            padding: 0 35px; border-radius: 16px; font-weight: 700; cursor: pointer; 
+            transition: all 0.2s; height: 54px; /* Matches input height */
             text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); min-width: 140px;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); min-width: 160px;
         }
-        button.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
+        button.submit-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4); filter: brightness(1.1); }
         button.submit-btn:active { transform: scale(0.98); }
 
-        .message { margin-top: 15px; font-size: 0.9rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
+        .message { margin-top: 15px; font-size: 0.95rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
 
         /* --- TABLE ELEGANCE --- */
         .table-header { 
             display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); 
+            margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); 
         }
-        .table-header h2 { margin: 0; font-size: 1.4rem; color: var(--text-main); font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
+        .table-header h2 { margin: 0; font-size: 1.6rem; color: var(--text-main); font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
         
-        /* Custom Year Dropdown */
+        /* Custom Year Dropdown - THE GRAY KILLER */
         .year-selector-container {
-            position: relative; display: flex; align-items: center; gap: 8px;
+            position: relative; display: flex; align-items: center; gap: 10px;
+            background: var(--input-bg); padding: 5px 10px; border-radius: 12px; border: 1px solid var(--border-color);
         }
         .year-selector-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; }
         #year-select {
             appearance: none; -webkit-appearance: none;
-            background: rgba(0,0,0,0.2); border: 1px solid var(--border-color);
-            color: var(--primary-color); padding: 6px 30px 6px 15px;
-            border-radius: 20px; font-weight: 700; cursor: pointer;
+            background-color: transparent; border: none;
+            color: var(--primary-color); padding: 5px 25px 5px 5px;
+            border-radius: 0; font-weight: 700; cursor: pointer; font-size: 1rem;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2310b981' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 10px center;
-            width: auto;
+            background-repeat: no-repeat; background-position: right center;
+            width: auto; height: auto;
         }
+        /* Forces options to be dark in most browsers */
+        #year-select option { background-color: var(--bg-color); color: var(--text-main); padding: 10px; }
 
-        .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); }
+        .table-wrapper { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
         
-        th, td { padding: 18px 12px; text-align: center; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        th, td { padding: 20px 15px; text-align: center; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         
         th { 
-            background-color: rgba(2, 44, 34, 0.8); font-weight: 600; font-size: 0.75rem; 
-            text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); 
+            background-color: var(--header-bg); font-weight: 700; font-size: 0.8rem; 
+            text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); 
         }
         td { font-size: 0.95rem; color: var(--text-main); font-variant-numeric: tabular-nums; }
         
         /* Table Row Hover Effect */
         tbody tr { transition: background-color 0.2s; }
-        tbody tr:hover { background-color: rgba(16, 185, 129, 0.05); }
+        tbody tr:hover { background-color: rgba(16, 185, 129, 0.08); }
         tbody tr:last-child td { border-bottom: none; }
 
         /* Sticky Name Column */
         .sticky-col { 
             position: sticky; left: 0; background-color: var(--card-bg); z-index: 10; 
             border-right: 2px solid var(--border-color); font-weight: 600; color: #ffffff; 
-            font-family: 'Playfair Display', serif; min-width: 160px; text-align: left;
-            padding-left: 20px;
+            font-family: 'Playfair Display', serif; min-width: 180px; text-align: left;
+            padding-left: 25px;
         }
-        tbody tr:hover .sticky-col { background-color: #065440; } /* Match hover */
-        th.sticky-col { background-color: #033328; z-index: 20; padding-left: 20px; text-align: left; } 
+        tbody tr:hover .sticky-col { background-color: #064e3b; filter: brightness(1.2); } 
+        th.sticky-col { background-color: var(--header-bg); z-index: 20; padding-left: 25px; text-align: left; } 
         
         /* Total Column Highlight */
         th.total-col, td.total-col { 
             background-color: var(--total-col-bg); font-weight: 800; color: #ffffff; 
-            border-left: 1px solid var(--border-color); font-size: 1rem;
+            border-left: 1px solid var(--border-color); font-size: 1.1rem;
         }
 
         /* Sub-text for "Added by" */
         .added-by-tag {
-            display: block; font-size: 0.6rem; color: var(--text-muted); 
-            font-family: 'Inter', sans-serif; font-weight: 400; opacity: 0.6; margin-top: 4px; letter-spacing: 0.5px;
+            display: block; font-size: 0.65rem; color: var(--text-muted); 
+            font-family: 'Inter', sans-serif; font-weight: 400; opacity: 0.8; margin-top: 5px; letter-spacing: 0.5px;
         }
 
         /* --- ACTION ICONS --- */
         .action-cell { display: flex; gap: 8px; justify-content: center; }
         
         .icon-btn {
-            background: transparent; border: 1px solid var(--border-color); 
-            color: var(--text-muted); width: 32px; height: 32px; border-radius: 8px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); 
+            color: var(--text-muted); width: 36px; height: 36px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            transition: all 0.2s; font-size: 1rem;
+            transition: all 0.2s; font-size: 1.1rem;
         }
         /* Tooltip-like hover colors */
-        .icon-btn.btn-clear:hover { background: rgba(251, 191, 36, 0.2); color: var(--warning-color); border-color: var(--warning-color); }
-        .icon-btn.btn-delete:hover { background: rgba(251, 113, 133, 0.2); color: var(--error-color); border-color: var(--error-color); }
-        .icon-btn.btn-restore:hover { background: rgba(52, 211, 153, 0.2); color: var(--success-color); border-color: var(--success-color); }
+        .icon-btn.btn-clear:hover { background: rgba(251, 191, 36, 0.2); color: var(--warning-color); border-color: var(--warning-color); transform: scale(1.1); }
+        .icon-btn.btn-delete:hover { background: rgba(251, 113, 133, 0.2); color: var(--error-color); border-color: var(--error-color); transform: scale(1.1); }
+        .icon-btn.btn-restore:hover { background: rgba(52, 211, 153, 0.2); color: var(--success-color); border-color: var(--success-color); transform: scale(1.1); }
 
         #config-alert { display: none; background-color: rgba(239, 68, 68, 0.2); border: 1px solid var(--error-color); color: #fca5a5; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
-        footer { margin-top: auto; padding-top: 40px; color: var(--text-muted); font-size: 0.75rem; opacity: 0.5; text-align: center; letter-spacing: 1px; }
+        footer { margin-top: auto; padding-top: 40px; color: var(--text-muted); font-size: 0.75rem; opacity: 0.5; text-align: center; letter-spacing: 2px; text-transform: uppercase; }
 
         /* --- SIDEBAR --- */
         #active-sidebar {
-            position: fixed; top: 0; right: -320px; width: 300px; height: 100vh;
-            background-color: #022c22; border-left: 1px solid var(--border-color);
-            box-shadow: -10px 0 40px rgba(0,0,0,0.6); z-index: 1001;
+            position: fixed; top: 0; right: -350px; width: 320px; height: 100vh;
+            background-color: #01221b; border-left: 1px solid var(--border-color);
+            box-shadow: -10px 0 50px rgba(0,0,0,0.8); z-index: 1001;
             transition: right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); padding: 30px;
             display: flex; flex-direction: column;
         }
         #active-sidebar.open { right: 0; }
-        #sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s; }
+        #sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s; }
         #sidebar-overlay.show { display: block; opacity: 1; }
         
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
-        .sidebar-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--primary-color); margin: 0; }
-        .close-sidebar-btn { background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; line-height: 1; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .sidebar-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text-main); margin: 0; }
+        .close-sidebar-btn { background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; line-height: 1; transition: color 0.2s; }
+        .close-sidebar-btn:hover { color: var(--error-color); }
         
-        .online-user-card { display: flex; align-items: center; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 10px; border: 1px solid transparent; }
-        .online-user-card .dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; margin-right: 15px; box-shadow: 0 0 10px #4ade80; }
+        .online-user-card { 
+            display: flex; align-items: center; padding: 15px; 
+            background: rgba(255,255,255,0.03); border-radius: 12px; 
+            margin-bottom: 12px; border: 1px solid var(--border-color); 
+            color: var(--text-main); font-weight: 500;
+        }
+        .online-user-card .dot { width: 10px; height: 10px; background: #4ade80; border-radius: 50%; margin-right: 15px; box-shadow: 0 0 10px #4ade80; }
 
         /* --- LOGIN MODAL --- */
-        #login-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 2000; display: flex; justify-content: center; align-items: center; }
-        .modal-content { background: #064e3b; padding: 40px; border-radius: 20px; border: 1px solid var(--primary-color); text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .modal-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 10px; color: var(--text-main); }
+        #login-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+        .modal-content { background: #032f26; padding: 50px; border-radius: 24px; border: 1px solid var(--primary-color); text-align: center; max-width: 450px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.6); }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; color: var(--text-main); }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 600px) {
             body { padding: 10px; }
-            .clinic-name { font-size: 2.8rem; margin-top: 50px; } /* Space for profile */
+            .clinic-name { font-size: 2.8rem; margin-top: 50px; } 
             .profile-corner { 
-                position: absolute; top: 10px; right: 10px; 
+                position: absolute; top: 15px; right: 15px; 
                 flex-direction: row; justify-content: flex-end; width: auto; 
             }
             #consultation-form { display: block; }
-            .form-group { width: 100%; margin-bottom: 15px; }
+            .form-group { width: 100%; margin-bottom: 20px; }
             button.submit-btn { width: 100%; }
             .card { padding: 20px; }
-            .table-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .year-selector-container { align-self: flex-start; }
+            .table-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .year-selector-container { align-self: flex-start; width: 100%; justify-content: space-between; }
             #active-sidebar { width: 85%; right: -100%; }
         }
     </style>
@@ -303,8 +328,8 @@
     <div id="login-modal" style="display: none;">
         <div class="modal-content">
             <h2 class="modal-title">Staff Check-In</h2>
-            <p style="color:var(--text-muted); margin-bottom:25px;">Who is accessing the system today?</p>
-            <input type="text" id="staff-name-input" placeholder="Enter your name (e.g., Nurse Joy)" style="margin-bottom: 20px; text-align: center;">
+            <p style="color:var(--text-muted); margin-bottom:30px; font-size: 1.1rem;">Who is accessing the system today?</p>
+            <input type="text" id="staff-name-input" placeholder="Enter your name (e.g., Nurse Joy)" style="margin-bottom: 25px; text-align: center; font-size: 1.2rem;">
             <button class="submit-btn" onclick="saveStaffName()">Start Session</button>
         </div>
     </div>
@@ -333,7 +358,7 @@
                 <button class="profile-pill" onclick="toggleSidebar()">
                     <span class="pulse-dot"></span> Online
                 </button>
-                <button class="profile-pill" onclick="changeUser()" style="background-color: rgba(2, 44, 34, 0.6);">
+                <button class="profile-pill" onclick="changeUser()" style="background-color: rgba(2, 44, 34, 0.6); border-color: transparent;">
                     <span id="current-user-name">Guest</span>
                     <span style="opacity:0.5; font-size:0.7em;">▼</span>
                 </button>
@@ -401,14 +426,14 @@
             <section class="card table-card">
                 <div class="table-header">
                     <h2>Deleted Patients History</h2>
-                    <span style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1px; font-weight:700;">ARCHIVE</span>
+                    <span style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 2px; font-weight:700;">ARCHIVE</span>
                 </div>
                 
                 <div class="table-wrapper">
                     <table id="history-table" style="min-width: 100%;">
                         <thead>
                             <tr>
-                                <th style="text-align:left; padding-left:20px;">Patient Name</th>
+                                <th style="text-align:left; padding-left:25px;">Patient Name</th>
                                 <th>Total Visits</th>
                                 <th>Deleted By</th>
                                 <th>Actions</th>
@@ -712,7 +737,7 @@
 
                 MONTH_NAMES.forEach(m => {
                     const cell = row.insertCell(); const count = summary.counts[m];
-                    if (count > 0) cell.textContent = count; else { cell.textContent = ""; } // Removed dash
+                    if (count > 0) cell.textContent = count; else { cell.textContent = ""; } 
                 });
 
                 const totalCell = row.insertCell(); totalCell.textContent = summary.total; totalCell.classList.add('total-col');
@@ -753,7 +778,7 @@
                 const deletedBy = records[0].deletedBy || "Unknown";
 
                 const row = tbody.insertRow();
-                const nameCell = row.insertCell(); nameCell.textContent = nameKey; nameCell.style.textAlign = 'left'; nameCell.style.paddingLeft = '20px';
+                const nameCell = row.insertCell(); nameCell.textContent = nameKey; nameCell.style.textAlign = 'left'; nameCell.style.paddingLeft = '25px';
                 const countCell = row.insertCell(); countCell.textContent = realCount;
                 const userCell = row.insertCell(); userCell.textContent = deletedBy;
 
