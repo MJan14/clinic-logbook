@@ -41,7 +41,12 @@
         .main-container { width: 100%; max-width: 1400px; display: flex; flex-direction: column; }
 
         /* --- HEADER & USER INFO --- */
-        header { text-align: center; margin-bottom: 20px; margin-top: 15px; }
+        header { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            margin-top: 15px; 
+            position: relative; 
+        }
         
         .clinic-name {
             font-family: 'Playfair Display', serif; 
@@ -56,6 +61,40 @@
             line-height: 1.1;
         }
 
+        /* Top Right Profile Area */
+        .profile-corner {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Modified Active Toggle Button */
+        #active-toggle-btn {
+            position: static; 
+            background-color: rgba(6, 78, 59, 0.8);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        #active-toggle-btn:hover {
+            background-color: var(--card-bg);
+            border-color: var(--primary-color);
+        }
+
         .app-title {
             font-size: 1rem; color: var(--text-muted); margin-top: 10px;
             letter-spacing: 3px; text-transform: uppercase; font-weight: 600; opacity: 0.9;
@@ -64,10 +103,10 @@
 
         /* User Badge */
         .user-badge {
-            background-color: rgba(16, 185, 129, 0.1);
+            background-color: transparent;
             border: 1px solid var(--primary-color);
             color: var(--primary-color);
-            padding: 5px 15px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
             cursor: pointer;
@@ -78,7 +117,7 @@
             text-transform: none;
             letter-spacing: 0.5px;
         }
-        .user-badge:hover { background-color: rgba(16, 185, 129, 0.2); }
+        .user-badge:hover { background-color: rgba(16, 185, 129, 0.1); }
 
         #status-indicator { 
             font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin: 0;
@@ -87,15 +126,6 @@
         }
 
         /* --- SIDEBAR & TOGGLE BUTTON --- */
-        
-        #active-toggle-btn {
-            position: fixed; bottom: 30px; right: 30px;
-            background-color: var(--card-bg); color: var(--primary-color); border: 1px solid var(--primary-color);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); padding: 12px 20px; border-radius: 30px;
-            font-family: 'Playfair Display', serif; font-weight: 700; cursor: pointer; z-index: 1000;
-            display: flex; align-items: center; gap: 8px; transition: all 0.3s;
-        }
-        #active-toggle-btn:hover { background-color: var(--primary-color); color: #022c22; transform: translateY(-2px); }
         
         .pulse-dot {
             width: 8px; height: 8px; background-color: #4ade80; border-radius: 50%;
@@ -257,8 +287,16 @@
         /* --- MOBILE SPECIFIC FIXES --- */
         @media (max-width: 600px) {
             body { padding: 10px; }
-            .clinic-name { font-size: 2.8rem; } 
+            .clinic-name { font-size: 2.8rem; margin-top: 40px; } /* Push down for profile */
+            .profile-corner { 
+                top: 0; 
+                right: 0; 
+                width: 100%; 
+                justify-content: flex-end; 
+                padding: 10px 0;
+            }
             .app-title { font-size: 0.8rem; letter-spacing: 2px; flex-direction: column; gap: 8px; }
+            
             #consultation-form { display: block; }
             .form-group { width: 100%; margin-bottom: 15px; }
             input { width: 100% !important; max-width: 100% !important; margin: 0 !important; }
@@ -268,7 +306,6 @@
             .action-cell { flex-direction: column; }
             .action-btn { width: 100%; text-align: center; padding: 8px; }
             
-            #active-toggle-btn { bottom: 20px; right: 20px; padding: 10px 15px; font-size: 0.85rem; }
             #active-sidebar { width: 80%; right: -85%; } 
         }
     </style>
@@ -297,11 +334,6 @@
         </div>
     </div>
 
-    <!-- TOGGLE BUTTON -->
-    <button id="active-toggle-btn" onclick="toggleSidebar()">
-        <span class="pulse-dot"></span> Active Users
-    </button>
-
     <div class="main-container">
         <!-- Config Alert -->
         <div id="config-alert">
@@ -310,14 +342,20 @@
         </div>
 
         <header>
+            <!-- Profile Corner (Top Right) -->
+            <div class="profile-corner">
+                <button id="active-toggle-btn" onclick="toggleSidebar()">
+                    <span class="pulse-dot"></span> Online
+                </button>
+                <button id="user-badge" class="user-badge" onclick="changeUser()">
+                    👤 <span id="current-user-name">Guest</span>
+                </button>
+            </div>
+
             <h1 class="clinic-name">Clinica Aesthetico</h1>
             <div class="app-title">
                 Logbook 
                 <span id="status-indicator">● Connecting...</span>
-                <!-- User Badge -->
-                <button id="user-badge" class="user-badge" onclick="changeUser()">
-                    👤 <span id="current-user-name">Guest</span> (Switch)
-                </button>
             </div>
         </header>
 
@@ -362,7 +400,7 @@
                             </tr>
                         </thead>
                         <tbody id="logbook-body">
-                            <tr><td colspan="15" style="text-align:center; padding:30px;">Loading data...</td></tr>
+                            <tr><td colspan="15" style="text-align:center; padding:30px;">Loading data from cloud...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -456,8 +494,14 @@
             } else { alert("Please enter a name."); }
         }
 
-        window.changeUser = function() {
+        window.changeUser = async function() {
             if(confirm("Switch user on this device?")) {
+                // Attempt to remove presence from DB before reloading
+                if(db && sessionId) {
+                    try {
+                        await deleteDoc(doc(db, "presence", sessionId));
+                    } catch(e) { console.error(e); }
+                }
                 localStorage.removeItem('clinica_user_name');
                 location.reload(); 
             }
@@ -511,8 +555,7 @@
             } catch (e) { console.error("Presence Error:", e); }
         }
         
-        setInterval(updatePresence, 60000); 
-        // Note: Initial call moved to checkUserIdentity/saveStaffName to prevent ghosts
+        setInterval(updatePresence, 30000); // 30s Heartbeat
 
         window.addEventListener("beforeunload", () => {
             if (db && sessionId) deleteDoc(doc(db, "presence", sessionId));
@@ -530,7 +573,8 @@
                     if (!data.lastSeen) return;
                     if(!data.lastSeen.toMillis) return; 
                     const lastSeenTime = data.lastSeen.toMillis();
-                    if (now - lastSeenTime < 2 * 60 * 1000) {
+                    // 1.5 Minutes Expiry
+                    if (now - lastSeenTime < 90 * 1000) {
                         activeUsers.add(data.user);
                     }
                 });
