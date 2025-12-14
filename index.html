@@ -74,6 +74,8 @@
             filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.5));
             line-height: 1.1;
             padding-bottom: 10px;
+            position: relative;
+            z-index: 1; /* Lower than profile buttons */
         }
 
         .app-title {
@@ -84,7 +86,13 @@
 
         /* --- TOP RIGHT PROFILE CORNER --- */
         .profile-corner {
-            position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 10px;
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            z-index: 100; /* FIX: Force buttons to be on top of everything */
         }
 
         .profile-pill {
@@ -335,7 +343,7 @@
         /* --- RESPONSIVE --- */
         @media (max-width: 600px) {
             body { padding: 10px; }
-            .clinic-name { font-size: 2.8rem; margin-top: 50px; } 
+            .clinic-name { font-size: 2.8rem; margin-top: 60px; } /* Increased margin to fix overlap */
             .profile-corner { 
                 position: absolute; top: 15px; right: 15px; 
                 flex-direction: row; justify-content: flex-end; width: auto; 
