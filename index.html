@@ -8,22 +8,23 @@
     <style>
         /* --- DARK THEME VARIABLES --- */
         :root {
-            --bg-color: #0f172a;       /* Deep Slate Background */
-            --card-bg: #1e293b;        /* Lighter Slate Card */
-            --primary-color: #3b82f6;  /* Bright Blue Accent */
-            --primary-hover: #60a5fa;  /* Lighter Blue on Hover */
-            --text-main: #f1f5f9;      /* White-ish Text */
-            --text-muted: #94a3b8;     /* Gray Text */
-            --border-color: #334155;   /* Dark Border */
-            --input-bg: #020617;       /* Very Dark Input Background */
-            --header-bg: #0f172a;      /* Table Header Background */
-            --total-col-bg: #172554;   /* Dark Blue for Total Column */
-            --success-color: #34d399;  /* Green for success messages */
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary-color: #3b82f6;
+            --primary-hover: #60a5fa;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --input-bg: #020617;
+            --header-bg: #0f172a;
+            --total-col-bg: #172554;
+            --success-color: #34d399;
+            --error-color: #ef4444;
+            --danger-bg: #7f1d1d;
+            --danger-hover: #b91c1c;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -36,31 +37,12 @@
             min-height: 100vh;
         }
 
-        .main-container {
-            width: 100%;
-            max-width: 1200px;
-        }
+        .main-container { width: 100%; max-width: 1200px; }
 
-        /* --- Header Section --- */
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            margin-top: 20px;
-        }
+        header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
+        header h1 { font-size: 2rem; margin: 0; color: var(--primary-color); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        header p { color: var(--text-muted); margin-top: 8px; }
 
-        header h1 {
-            font-size: 2rem;
-            margin: 0;
-            color: var(--primary-color);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        header p {
-            color: var(--text-muted);
-            margin-top: 8px;
-        }
-
-        /* --- Card Containers --- */
         .card {
             background: var(--card-bg);
             border-radius: 12px;
@@ -70,186 +52,69 @@
             border: 1px solid var(--border-color);
         }
 
-        /* --- Form Styles --- */
-        #consultation-form {
-            display: flex;
-            gap: 20px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .form-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-        }
-
+        #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 200px; }
+        .form-group label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
+        
         input {
-            width: 100%;
-            padding: 12px 15px;
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1rem;
-            color: var(--text-main);
-            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%; padding: 12px 15px; background-color: var(--input-bg);
+            border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem;
+            color: var(--text-main); transition: border-color 0.2s, box-shadow 0.2s;
         }
-
-        /* Dark mode calendar icon fix */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            cursor: pointer;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-        }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+        input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
 
         button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            height: 46px; /* Match input height roughly */
+            background-color: var(--primary-color); color: white; border: none;
+            padding: 12px 25px; border-radius: 6px; font-weight: 600; cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s; height: 46px;
         }
+        button:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
 
-        button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
+        .message { margin-top: 15px; font-size: 0.9rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
 
-        button:active {
-            transform: translateY(0);
-        }
-
-        .message {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            min-height: 20px;
-            color: var(--success-color);
-        }
-
-        /* --- Table Styles --- */
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .table-header h2 {
-            margin: 0;
-            font-size: 1.25rem;
-            color: var(--text-main);
-        }
-
+        /* Table Styles */
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .table-header h2 { margin: 0; font-size: 1.25rem; color: var(--text-main); }
         #current-year-display {
-            background-color: var(--input-bg);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            color: var(--primary-color);
-            border: 1px solid var(--border-color);
-            font-weight: 600;
+            background-color: var(--input-bg); padding: 6px 14px; border-radius: 20px;
+            font-size: 0.875rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600;
         }
 
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 800px; /* Ensures table doesn't squish too much */
-        }
-
-        th, td {
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
+        .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        
         th {
-            background-color: var(--header-bg);
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            white-space: nowrap;
+            background-color: var(--header-bg); font-weight: 600; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); white-space: nowrap;
+        }
+        td { font-size: 0.95rem; color: var(--text-main); }
+        tr:last-child td { border-bottom: none; }
+
+        .sticky-col { position: sticky; left: 0; background-color: var(--card-bg); z-index: 10; border-right: 2px solid var(--border-color); font-weight: 600; color: var(--text-main); }
+        th.sticky-col { background-color: var(--header-bg); z-index: 20; }
+        
+        th.total-col, td.total-col {
+            background-color: var(--total-col-bg); text-align: center; font-weight: 700;
+            color: var(--primary-hover); border-left: 1px solid var(--border-color);
         }
 
-        td {
-            font-size: 0.95rem;
-            color: var(--text-main);
+        /* Action Column Styles */
+        .delete-btn {
+            background-color: transparent; color: var(--error-color); border: 1px solid var(--border-color);
+            padding: 6px 12px; font-size: 0.75rem; height: auto; opacity: 0.8;
+            transition: all 0.2s; cursor: pointer; border-radius: 4px;
         }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* Sticky First Column for Mobile Scrolling */
-        .sticky-col {
-            position: sticky;
-            left: 0;
-            background-color: var(--card-bg);
-            z-index: 10;
-            border-right: 2px solid var(--border-color);
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        th.sticky-col {
-            background-color: var(--header-bg);
-            z-index: 20;
-        }
-
-        /* Highlight Total Column */
-        th:last-child, td:last-child {
-            background-color: var(--total-col-bg);
-            text-align: center;
-            font-weight: 700;
-            color: var(--primary-hover);
-            border-left: 1px solid var(--border-color);
-        }
-
-        td:not(:first-child):not(:last-child) {
-            text-align: center;
-            color: var(--text-muted);
-        }
-
-        /* Zeros should be dim */
-        td.zero-value {
-            opacity: 0.3;
-        }
+        .delete-btn:hover { background-color: var(--danger-bg); color: white; border-color: var(--danger-bg); opacity: 1; }
+        
+        td:not(:first-child):not(.total-col):not(:last-child) { text-align: center; color: var(--text-muted); }
+        td.zero-value { opacity: 0.3; }
 
         @media (max-width: 600px) {
-            #consultation-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            button {
-                width: 100%;
-            }
+            #consultation-form { flex-direction: column; align-items: stretch; }
+            button { width: 100%; }
         }
     </style>
 </head>
@@ -257,7 +122,7 @@
 
     <div class="main-container">
         <header>
-            <h1>Medical Logbook</h1>
+            <h1>Logbook</h1>
             <p>Consultation Tracking System</p>
         </header>
 
@@ -290,7 +155,8 @@
                         <tr>
                             <th class="sticky-col">Patient Name</th>
                             <!-- Months generated by JS -->
-                            <th>TOTAL</th>
+                            <th class="total-col">TOTAL</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="logbook-body">
@@ -301,25 +167,24 @@
     </div>
 
     <script>
+        // --- GLOBAL CONFIG ---
         const STORAGE_KEY = 'consultationLogbookData';
         const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const currentYear = new Date().getFullYear();
         let allConsultations = [];
 
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             setupForm();
             renderLogbook();
         });
 
+        // --- DATA HANDLING ---
         function loadData() {
             const stored = localStorage.getItem(STORAGE_KEY);
             if (stored) {
-                try {
-                    allConsultations = JSON.parse(stored);
-                } catch (e) {
-                    allConsultations = [];
-                }
+                try { allConsultations = JSON.parse(stored); } catch (e) { allConsultations = []; }
             }
         }
 
@@ -329,9 +194,7 @@
 
         function setupForm() {
             const dateInput = document.getElementById('consultation-date');
-            // Set default date to today
             dateInput.value = new Date().toISOString().split('T')[0];
-            
             document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
             document.getElementById('current-year-display').textContent = `Year: ${currentYear}`;
         }
@@ -347,36 +210,65 @@
 
             if (!name || !date) return;
 
-            // Add new record
             allConsultations.push({ name, date });
             saveData();
             
-            // Show success message
-            messageBox.textContent = `✓ Successfully saved: ${name}`;
+            messageBox.textContent = `✓ Saved: ${name}`;
             setTimeout(() => messageBox.textContent = '', 3000);
 
-            // Reset name only, keep date (useful for batch entry)
             nameInput.value = '';
             nameInput.focus();
-            
             renderLogbook();
         }
 
+        // --- CLEAR FUNCTION (Global Scope) ---
+        function clearPatientRecords(patientName) {
+            if (!confirm(`Are you sure you want to clear ALL ${currentYear} entries for "${patientName}"?\n\nThis cannot be undone.`)) {
+                return;
+            }
+
+            const initialCount = allConsultations.length;
+
+            // Keep records that DO NOT match (Name == target AND Year == currentYear)
+            const updatedList = allConsultations.filter(rec => {
+                const recName = rec.name.trim().toUpperCase();
+                const targetName = patientName.trim().toUpperCase();
+                
+                // Safe date parsing
+                let recYear;
+                try {
+                    recYear = new Date(rec.date + 'T00:00:00').getFullYear();
+                } catch(e) {
+                    return true; // Keep malformed records safely
+                }
+
+                const isMatch = (recName === targetName && recYear === currentYear);
+                return !isMatch; // If match, return false (remove it)
+            });
+
+            if (updatedList.length === initialCount) {
+                alert("No records found to delete for this year.");
+                return;
+            }
+
+            allConsultations = updatedList;
+            saveData();
+            renderLogbook();
+            alert(`Entries cleared for ${patientName}.`);
+        }
+
+        // --- RENDER LOGIC ---
         function calculateSummary(records) {
             const counts = {};
             let total = 0;
-
             MONTH_NAMES.forEach(m => counts[m] = 0);
-
             records.forEach(rec => {
-                // Parse date string carefully
                 const d = new Date(rec.date + 'T00:00:00');
                 if (d.getFullYear() === currentYear) {
                     counts[MONTH_NAMES[d.getMonth()]]++;
                     total++;
                 }
             });
-
             return { counts, total };
         }
 
@@ -384,38 +276,24 @@
             const tbody = document.getElementById('logbook-body');
             const theadRow = document.querySelector('#logbook-table thead tr');
             
-            // 1. Group records by Patient Name (Case Insensitive Sorting)
+            // 1. Group by Name
             const patients = allConsultations.reduce((acc, curr) => {
-                const key = curr.name.trim(); // Use actual name as key, we'll sort case-insensitively later
+                const key = curr.name.trim(); 
                 const upperKey = key.toUpperCase();
-                
-                // Find if we already have this patient (ignoring case)
                 let existingKey = Object.keys(acc).find(k => k.toUpperCase() === upperKey);
-                
-                if (existingKey) {
-                    acc[existingKey].push(curr);
-                } else {
-                    acc[key] = [curr];
-                }
+                if (existingKey) { acc[existingKey].push(curr); } 
+                else { acc[key] = [curr]; }
                 return acc;
             }, {});
 
-            const sortedNames = Object.keys(patients).sort((a, b) => 
-                a.toLowerCase().localeCompare(b.toLowerCase())
-            );
+            const sortedNames = Object.keys(patients).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-            // 2. Rebuild Headers (Dynamic Months)
-            // Remove old month headers if they exist (keep Name and Total)
-            while (theadRow.children.length > 2) {
-                theadRow.removeChild(theadRow.children[1]);
-            }
-            // Insert Months
-            const totalTh = theadRow.lastElementChild;
-            MONTH_NAMES.forEach(m => {
-                const th = document.createElement('th');
-                th.textContent = m;
-                theadRow.insertBefore(th, totalTh);
-            });
+            // 2. Rebuild Headers
+            theadRow.innerHTML = ''; 
+            const nameTh = document.createElement('th'); nameTh.textContent = "Patient Name"; nameTh.classList.add('sticky-col'); theadRow.appendChild(nameTh);
+            MONTH_NAMES.forEach(m => { const th = document.createElement('th'); th.textContent = m; theadRow.appendChild(th); });
+            const totalTh = document.createElement('th'); totalTh.textContent = "TOTAL"; totalTh.classList.add('total-col'); theadRow.appendChild(totalTh);
+            const actionsTh = document.createElement('th'); actionsTh.textContent = "Actions"; theadRow.appendChild(actionsTh);
 
             // 3. Rebuild Body
             tbody.innerHTML = '';
@@ -423,11 +301,9 @@
             if (sortedNames.length === 0) {
                 const row = tbody.insertRow();
                 const cell = row.insertCell();
-                cell.colSpan = 14;
-                cell.textContent = "No records found for " + currentYear;
-                cell.style.textAlign = "center";
-                cell.style.padding = "30px";
-                cell.style.color = "var(--text-muted)";
+                cell.colSpan = 15;
+                cell.textContent = "No records found. Add a patient to start.";
+                cell.style.textAlign = "center"; cell.style.padding = "30px"; cell.style.color = "var(--text-muted)";
                 return;
             }
 
@@ -436,27 +312,30 @@
                 const summary = calculateSummary(records);
                 const row = tbody.insertRow();
                 
-                // Name Column
-                const nameCell = row.insertCell();
-                nameCell.textContent = nameKey; // Display the name exactly as typed
-                nameCell.classList.add('sticky-col');
+                // Name
+                const nameCell = row.insertCell(); nameCell.textContent = nameKey; nameCell.classList.add('sticky-col');
 
-                // Month Columns
+                // Months
                 MONTH_NAMES.forEach(m => {
                     const cell = row.insertCell();
                     const count = summary.counts[m];
-                    
-                    if (count > 0) {
-                        cell.textContent = count;
-                    } else {
-                        cell.textContent = "-";
-                        cell.classList.add('zero-value'); // Make hyphens dimmer
-                    }
+                    if (count > 0) cell.textContent = count;
+                    else { cell.textContent = "-"; cell.classList.add('zero-value'); }
                 });
 
-                // Total Column
-                const totalCell = row.insertCell();
-                totalCell.textContent = summary.total;
+                // Total
+                const totalCell = row.insertCell(); totalCell.textContent = summary.total; totalCell.classList.add('total-col');
+
+                // Action Button
+                const actionCell = row.insertCell();
+                const clearBtn = document.createElement('button');
+                clearBtn.textContent = "Clear";
+                clearBtn.className = "delete-btn";
+                // Attach Event Listener directly
+                clearBtn.onclick = function() {
+                    clearPatientRecords(nameKey);
+                };
+                actionCell.appendChild(clearBtn);
             });
         }
     </script>
