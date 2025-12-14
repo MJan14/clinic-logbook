@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultation Logbook</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Clinica Aesthetico Logbook</title>
+    <!-- Imported Playfair Display for the Fancy Title -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <style>
-        /* --- DARK THEME VARIABLES --- */
+        /* --- DARK GREEN AESTHETIC VARIABLES --- */
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --primary-color: #3b82f6;
-            --primary-hover: #60a5fa;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --input-bg: #020617;
-            --header-bg: #0f172a;
-            --total-col-bg: #172554;
-            --success-color: #34d399;
-            --error-color: #ef4444;
-            --danger-bg: #7f1d1d;
-            --warning-color: #f59e0b; /* Amber for Clear */
+            --bg-color: #022c22;       /* Very Dark Jungle Green */
+            --card-bg: #064e3b;        /* Deep Emerald Green */
+            --primary-color: #10b981;  /* Vibrant Emerald */
+            --primary-hover: #34d399;  /* Lighter Emerald */
+            --text-main: #ecfdf5;      /* Very Light Mint/White */
+            --text-muted: #a7f3d0;     /* Soft Sage Green */
+            --border-color: #065f46;   /* Dark Green Border */
+            --input-bg: #022c22;       /* Matches Background */
+            --header-bg: #022c22;      /* Table Header Background */
+            --total-col-bg: #047857;   /* Rich Green for Total Column */
+            --success-color: #34d399;  /* Emerald Green */
+            --error-color: #fb7185;    /* Soft Red/Rose */
+            --danger-bg: #881337;      /* Dark Rose */
+            --warning-color: #fbbf24;  /* Amber/Gold */
         }
 
         * { box-sizing: border-box; }
@@ -37,125 +38,167 @@
             min-height: 100vh;
         }
 
-        /* Wide Container */
         .main-container { width: 100%; max-width: 98%; display: flex; flex-direction: column; }
 
-        header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
-        header h1 { font-size: 2rem; margin: 0; color: var(--primary-color); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        header p { color: var(--text-muted); margin-top: 8px; }
+        /* --- HEADER --- */
+        header { text-align: center; margin-bottom: 25px; margin-top: 10px; }
+        
+        .clinic-name {
+            font-family: 'Playfair Display', serif; /* Fancy Font */
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0;
+            /* Gold Gradient for Fancy Look */
+            background: linear-gradient(to right, #facc15, #fef08a, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+            text-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+        }
 
+        .app-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        /* --- TABS --- */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 10px 25px;
+            border-radius: 30px; /* More rounded/elegant */
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            min-width: 150px;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 1px;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: #022c22; /* Dark text on active button */
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+            font-weight: 700;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+
+        /* --- CONTENT SECTIONS --- */
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- CARDS & FORMS --- */
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            padding: 30px;
             margin-bottom: 25px;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
-        .form-group label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         
         input {
-            width: 100%; padding: 12px 15px; background-color: var(--input-bg);
-            border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem;
-            color: var(--text-main); transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%; padding: 14px 18px; background-color: var(--input-bg);
+            border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;
+            color: var(--text-main); transition: all 0.2s;
         }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-        input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg); cursor: pointer; }
+        input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
 
         button.submit-btn {
-            background-color: var(--primary-color); color: white; border: none;
-            padding: 12px 25px; border-radius: 6px; font-weight: 600; cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s; height: 46px;
+            background: linear-gradient(135deg, var(--primary-color), #059669);
+            color: white; border: none;
+            padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; height: 50px;
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
-        button.submit-btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+        button.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 15px rgba(0,0,0,0.3); filter: brightness(1.1); }
         button.submit-btn:active { transform: translateY(0); }
 
         .message { margin-top: 15px; font-size: 0.9rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
 
-        /* Table Styles */
+        /* --- TABLE STYLES --- */
         .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
-        .table-header h2 { margin: 0; font-size: 1.25rem; color: var(--text-main); }
+        .table-header h2 { margin: 0; font-size: 1.5rem; color: var(--text-main); font-family: 'Playfair Display', serif; }
         #current-year-display {
-            background-color: var(--input-bg); padding: 6px 14px; border-radius: 20px;
-            font-size: 0.875rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600;
+            background-color: var(--input-bg); padding: 8px 16px; border-radius: 20px;
+            font-size: 0.85rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600; letter-spacing: 1px;
         }
 
-        .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border-color); }
+        .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
         
-        th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        th, td { padding: 16px 12px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         
         th {
-            background-color: var(--header-bg); font-weight: 600; font-size: 0.85rem;
-            text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); white-space: nowrap;
+            background-color: rgba(0,0,0,0.2); font-weight: 600; font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); white-space: nowrap;
         }
         td { font-size: 0.95rem; color: var(--text-main); }
         tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: rgba(255,255,255,0.02); }
 
-        .sticky-col { position: sticky; left: 0; background-color: var(--card-bg); z-index: 10; border-right: 2px solid var(--border-color); font-weight: 600; color: var(--text-main); }
-        th.sticky-col { background-color: var(--header-bg); z-index: 20; }
+        .sticky-col { position: sticky; left: 0; background-color: var(--card-bg); z-index: 10; border-right: 2px solid var(--border-color); font-weight: 600; color: var(--text-main); font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
+        th.sticky-col { background-color: #04382c; z-index: 20; } /* Slightly darker header for sticky */
         
         th.total-col, td.total-col {
             background-color: var(--total-col-bg); text-align: center; font-weight: 700;
-            color: var(--primary-hover); border-left: 1px solid var(--border-color);
+            color: #ecfdf5; border-left: 1px solid var(--border-color);
         }
 
         td:not(:first-child):not(.total-col):not(:last-child) { text-align: center; color: var(--text-muted); }
-        td.zero-value { opacity: 0.3; }
+        td.zero-value { opacity: 0.2; }
 
-        /* --- ACTION BUTTONS CSS --- */
-        .action-cell {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-start;
-        }
+        /* --- ACTION BUTTONS --- */
+        .action-cell { display: flex; gap: 8px; justify-content: flex-start; }
 
         .action-btn {
-            padding: 6px 10px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 1px solid;
-            background: transparent;
-            transition: all 0.2s;
-            white-space: nowrap;
+            padding: 6px 12px; font-size: 0.7rem; border-radius: 6px; cursor: pointer;
+            border: 1px solid; background: transparent; transition: all 0.2s; white-space: nowrap;
+            text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;
         }
 
-        /* Clear Button (Amber) */
-        .btn-clear {
-            color: var(--warning-color);
-            border-color: var(--warning-color);
-        }
-        .btn-clear:hover {
-            background-color: var(--warning-color);
-            color: #0f172a; /* Dark text on hover */
-        }
+        .btn-clear { color: var(--warning-color); border-color: rgba(251, 191, 36, 0.3); }
+        .btn-clear:hover { background-color: var(--warning-color); color: #0f172a; border-color: var(--warning-color); }
 
-        /* Delete Button (Red) */
-        .btn-delete {
-            color: var(--error-color);
-            border-color: var(--error-color);
-        }
-        .btn-delete:hover {
-            background-color: var(--error-color);
-            color: white;
-        }
+        .btn-delete { color: var(--error-color); border-color: rgba(251, 113, 133, 0.3); }
+        .btn-delete:hover { background-color: var(--error-color); color: white; border-color: var(--error-color); }
+
+        .btn-restore { color: var(--success-color); border-color: rgba(52, 211, 153, 0.3); }
+        .btn-restore:hover { background-color: var(--success-color); color: #0f172a; border-color: var(--success-color); }
         
-        footer {
-            margin-top: auto;
-            padding-top: 20px;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
+        footer { margin-top: auto; padding-top: 30px; color: var(--text-muted); font-size: 0.8rem; opacity: 0.6; text-align: center; letter-spacing: 1px; }
 
         @media (max-width: 600px) {
             #consultation-form { flex-direction: column; align-items: stretch; }
             button.submit-btn { width: 100%; }
             .action-cell { flex-direction: column; }
+            .clinic-name { font-size: 2.2rem; }
         }
     </style>
 </head>
@@ -163,48 +206,81 @@
 
     <div class="main-container">
         <header>
-            <h1>Logbook</h1>
-            <p>Consultation Tracking System</p>
+            <h1 class="clinic-name">Clinica Aesthetico</h1>
+            <div class="app-title">Logbook</div>
         </header>
 
-        <section class="card input-card">
-            <form id="consultation-form">
-                <div class="form-group">
-                    <label for="patient-name">Patient Name</label>
-                    <input type="text" id="patient-name" required placeholder="Ex: Alice Johnson" autocomplete="off">
-                </div>
-                
-                <div class="form-group">
-                    <label for="consultation-date">Date</label>
-                    <input type="date" id="consultation-date" required>
-                </div>
-                
-                <button type="submit" class="submit-btn">Add Entry</button>
-            </form>
-            <div id="message" class="message"></div>
-        </section>
+        <!-- Navigation Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('active')">Active Records</button>
+            <button class="tab-btn" onclick="switchTab('history')">Deleted History</button>
+        </div>
 
-        <section class="card table-card">
-            <div class="table-header">
-                <h2>Records Directory</h2>
-                <span id="current-year-display"></span>
-            </div>
-            
-            <div class="table-wrapper">
-                <table id="logbook-table">
-                    <thead>
-                        <tr>
-                            <th class="sticky-col">Patient Name</th>
-                            <!-- Months generated by JS -->
-                            <th class="total-col">TOTAL</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logbook-body">
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        <!-- VIEW 1: ACTIVE LOGBOOK -->
+        <div id="active-view" class="view-section active">
+            <section class="card input-card">
+                <form id="consultation-form">
+                    <div class="form-group">
+                        <label for="patient-name">Patient Name</label>
+                        <input type="text" id="patient-name" required placeholder="Ex: Alice Johnson" autocomplete="off">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="consultation-date">Date</label>
+                        <input type="date" id="consultation-date" required>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Add Entry</button>
+                </form>
+                <div id="message" class="message"></div>
+            </section>
+
+            <section class="card table-card">
+                <div class="table-header">
+                    <h2>Records Directory</h2>
+                    <span id="current-year-display"></span>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="logbook-table">
+                        <thead>
+                            <tr>
+                                <th class="sticky-col">Patient Name</th>
+                                <!-- Months generated by JS -->
+                                <th class="total-col">TOTAL</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logbook-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW 2: DELETED HISTORY -->
+        <div id="history-view" class="view-section">
+            <section class="card table-card">
+                <div class="table-header">
+                    <h2>Deleted Patients History</h2>
+                    <span style="color: var(--text-muted); font-size: 0.9rem; letter-spacing: 1px;">ARCHIVED RECORDS</span>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="history-table" style="min-width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Total Visits (When Deleted)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
         
         <footer>
             Made by Alexa Dela Torre
@@ -214,27 +290,46 @@
     <script>
         // --- GLOBAL CONFIG ---
         const STORAGE_KEY = 'consultationLogbookData';
+        const ARCHIVE_KEY = 'consultationArchiveData';
         const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const currentYear = new Date().getFullYear();
+        
         let allConsultations = [];
+        let archivedConsultations = [];
 
         // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             setupForm();
             renderLogbook();
+            renderHistory();
         });
+
+        // --- TABS LOGIC ---
+        function switchTab(tabName) {
+            // Update Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update Sections
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`${tabName}-view`).classList.add('active');
+        }
 
         // --- DATA HANDLING ---
         function loadData() {
+            // Load Active
             const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                try { allConsultations = JSON.parse(stored); } catch (e) { allConsultations = []; }
-            }
+            if (stored) { try { allConsultations = JSON.parse(stored); } catch (e) { allConsultations = []; } }
+            
+            // Load History
+            const archived = localStorage.getItem(ARCHIVE_KEY);
+            if (archived) { try { archivedConsultations = JSON.parse(archived); } catch (e) { archivedConsultations = []; } }
         }
 
         function saveData() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(allConsultations));
+            localStorage.setItem(ARCHIVE_KEY, JSON.stringify(archivedConsultations));
         }
 
         function setupForm() {
@@ -266,37 +361,28 @@
             renderLogbook();
         }
 
-        // --- ACTION 1: CLEAR YEAR (FIXED: Keeps Name in list) ---
+        // --- ACTION 1: CLEAR YEAR (Keeps Name) ---
         function clearPatientYear(patientName) {
             if (!confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?\n\nThis resets the counts to 0 but KEEPS the name in the list.`)) {
                 return;
             }
 
-            // 1. Filter out ONLY records for this patient in the current year
             allConsultations = allConsultations.filter(rec => {
                 const recName = rec.name.trim().toUpperCase();
                 const targetName = patientName.trim().toUpperCase();
                 
-                // If this is the patient we are clearing...
                 if (recName === targetName) {
-                    if (rec.date === 'PLACEHOLDER') return true; // Keep existing placeholders
-
+                    if (rec.date === 'PLACEHOLDER') return true;
                     const d = new Date(rec.date + 'T00:00:00');
-                    // Delete if it's in the current year
-                    if (!isNaN(d) && d.getFullYear() === currentYear) {
-                        return false; 
-                    }
+                    if (!isNaN(d) && d.getFullYear() === currentYear) return false; 
                 }
-                // Keep everything else
                 return true; 
             });
 
-            // 2. CHECK if the patient still exists in the array
             const patientExists = allConsultations.some(rec => 
                 rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
             );
 
-            // 3. IF NO RECORDS LEFT, add a "Placeholder" so the name stays visible
             if (!patientExists) {
                 allConsultations.push({ name: patientName, date: 'PLACEHOLDER' });
             }
@@ -305,38 +391,63 @@
             renderLogbook();
         }
 
-        // --- ACTION 2: DELETE NAME (Removes EVERYTHING) ---
+        // --- ACTION 2: DELETE NAME (Moves to History) ---
         function deletePatientFully(patientName) {
-            if (!confirm(`⚠️ PERMANENTLY DELETE "${patientName}"?\n\nThis will remove ALL records and REMOVE the name from the list.\nThis cannot be undone.`)) {
+            if (!confirm(`⚠️ DELETE "${patientName}"?\n\nThis will remove them from the active list and move them to the "Deleted History" tab.`)) {
                 return;
             }
 
-            const initialCount = allConsultations.length;
+            // Identify records to move
+            const recordsToArchive = allConsultations.filter(rec => 
+                rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
+            );
 
-            // Remove anything matching the name (including placeholders)
+            // Add to archive
+            archivedConsultations = [...archivedConsultations, ...recordsToArchive];
+
+            // Remove from active
             allConsultations = allConsultations.filter(rec => 
                 rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()
             );
 
-            if (allConsultations.length === initialCount) {
-                alert("No records found for this patient.");
+            saveData();
+            renderLogbook();
+            renderHistory();
+        }
+
+        // --- ACTION 3: RESTORE (From History to Active) ---
+        function restorePatient(patientName) {
+            if (!confirm(`Restore "${patientName}" to the active logbook?`)) {
                 return;
             }
 
+            // Identify records to restore
+            const recordsToRestore = archivedConsultations.filter(rec => 
+                rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
+            );
+
+            // Add back to active
+            allConsultations = [...allConsultations, ...recordsToRestore];
+
+            // Remove from archive
+            archivedConsultations = archivedConsultations.filter(rec => 
+                rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()
+            );
+
             saveData();
             renderLogbook();
+            renderHistory();
+            alert(`${patientName} has been restored to the Active Logbook.`);
         }
 
-        // --- RENDER LOGIC ---
+        // --- RENDER FUNCTIONS ---
         function calculateSummary(records) {
             const counts = {};
             let total = 0;
             MONTH_NAMES.forEach(m => counts[m] = 0);
             
             records.forEach(rec => {
-                // Ignore placeholder records in the math
                 if (rec.date === 'PLACEHOLDER') return;
-
                 const d = new Date(rec.date + 'T00:00:00');
                 if (!isNaN(d) && d.getFullYear() === currentYear) {
                     counts[MONTH_NAMES[d.getMonth()]]++;
@@ -350,7 +461,7 @@
             const tbody = document.getElementById('logbook-body');
             const theadRow = document.querySelector('#logbook-table thead tr');
             
-            // 1. Group by Name
+            // Group by Name
             const patients = allConsultations.reduce((acc, curr) => {
                 const key = curr.name.trim(); 
                 const upperKey = key.toUpperCase();
@@ -362,21 +473,20 @@
 
             const sortedNames = Object.keys(patients).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-            // 2. Rebuild Headers
+            // Rebuild Headers
             theadRow.innerHTML = ''; 
             const nameTh = document.createElement('th'); nameTh.textContent = "Patient Name"; nameTh.classList.add('sticky-col'); theadRow.appendChild(nameTh);
             MONTH_NAMES.forEach(m => { const th = document.createElement('th'); th.textContent = m; theadRow.appendChild(th); });
             const totalTh = document.createElement('th'); totalTh.textContent = "TOTAL"; totalTh.classList.add('total-col'); theadRow.appendChild(totalTh);
             const actionsTh = document.createElement('th'); actionsTh.textContent = "Actions"; theadRow.appendChild(actionsTh);
 
-            // 3. Rebuild Body
             tbody.innerHTML = '';
 
             if (sortedNames.length === 0) {
                 const row = tbody.insertRow();
                 const cell = row.insertCell();
                 cell.colSpan = 15;
-                cell.textContent = "No records found. Add a patient to start.";
+                cell.textContent = "No active records.";
                 cell.style.textAlign = "center"; cell.style.padding = "30px"; cell.style.color = "var(--text-muted)";
                 return;
             }
@@ -386,10 +496,8 @@
                 const summary = calculateSummary(records);
                 const row = tbody.insertRow();
                 
-                // Name
                 const nameCell = row.insertCell(); nameCell.textContent = nameKey; nameCell.classList.add('sticky-col');
 
-                // Months
                 MONTH_NAMES.forEach(m => {
                     const cell = row.insertCell();
                     const count = summary.counts[m];
@@ -397,29 +505,70 @@
                     else { cell.textContent = "-"; cell.classList.add('zero-value'); }
                 });
 
-                // Total
                 const totalCell = row.insertCell(); totalCell.textContent = summary.total; totalCell.classList.add('total-col');
 
-                // Actions Column (Now with TWO buttons)
                 const actionCell = row.insertCell();
                 const btnContainer = document.createElement('div');
                 btnContainer.className = 'action-cell';
 
-                // Button 1: Clear Year
                 const clearBtn = document.createElement('button');
-                clearBtn.textContent = "Clear Year";
-                clearBtn.className = "action-btn btn-clear";
+                clearBtn.textContent = "Clear Year"; clearBtn.className = "action-btn btn-clear";
                 clearBtn.onclick = function() { clearPatientYear(nameKey); };
 
-                // Button 2: Delete Name
                 const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = "Delete Name";
-                deleteBtn.className = "action-btn btn-delete";
+                deleteBtn.textContent = "Delete Name"; deleteBtn.className = "action-btn btn-delete";
                 deleteBtn.onclick = function() { deletePatientFully(nameKey); };
 
                 btnContainer.appendChild(clearBtn);
                 btnContainer.appendChild(deleteBtn);
                 actionCell.appendChild(btnContainer);
+            });
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('history-body');
+            
+            const patients = archivedConsultations.reduce((acc, curr) => {
+                const key = curr.name.trim();
+                const upperKey = key.toUpperCase();
+                let existingKey = Object.keys(acc).find(k => k.toUpperCase() === upperKey);
+                if (existingKey) { acc[existingKey].push(curr); } 
+                else { acc[key] = [curr]; }
+                return acc;
+            }, {});
+
+            const sortedNames = Object.keys(patients).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
+            tbody.innerHTML = '';
+
+            if (sortedNames.length === 0) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 3;
+                cell.textContent = "No deleted history.";
+                cell.style.textAlign = "center"; cell.style.padding = "30px"; cell.style.color = "var(--text-muted)";
+                return;
+            }
+
+            sortedNames.forEach(nameKey => {
+                const records = patients[nameKey];
+                // Calculate raw total of entries (ignoring placeholders)
+                const realCount = records.filter(r => r.date !== 'PLACEHOLDER').length;
+
+                const row = tbody.insertRow();
+                
+                const nameCell = row.insertCell();
+                nameCell.textContent = nameKey;
+
+                const countCell = row.insertCell();
+                countCell.textContent = realCount;
+
+                const actionCell = row.insertCell();
+                const restoreBtn = document.createElement('button');
+                restoreBtn.textContent = "Restore";
+                restoreBtn.className = "action-btn btn-restore";
+                restoreBtn.onclick = function() { restorePatient(nameKey); };
+                actionCell.appendChild(restoreBtn);
             });
         }
     </script>
