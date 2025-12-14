@@ -24,7 +24,7 @@
             --warning-color: #fbbf24;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -86,6 +86,56 @@
             letter-spacing: 0.5px; text-transform: none; display: inline-block;
         }
 
+        /* --- ACTIVE NOW BAR --- */
+        .active-now-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .active-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .online-user {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(6, 95, 70, 0.6);
+            border: 1px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            color: var(--text-main);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: pulse-border 2s infinite;
+        }
+
+        .online-dot {
+            width: 8px; height: 8px;
+            background-color: #4ade80; /* Bright Green */
+            border-radius: 50%;
+            margin-right: 6px;
+            box-shadow: 0 0 5px #4ade80;
+        }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
         /* --- TABS --- */
         .tabs-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn {
@@ -113,10 +163,11 @@
         .form-group label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         
         input {
-            width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;
-            padding: 12px 15px; background-color: var(--input-bg);
+            display: block; width: 100%; padding: 12px 15px; 
+            background-color: var(--input-bg);
             border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;
-            color: var(--text-main); transition: all 0.2s; -webkit-appearance: none;
+            color: var(--text-main); transition: all 0.2s; 
+            -webkit-appearance: none; appearance: none; margin: 0; box-sizing: border-box;
         }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg); cursor: pointer; }
         input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
@@ -146,8 +197,13 @@
 
         .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); -webkit-overflow-scrolling: touch; width: 100%; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         
+        /* UPDATED ALIGNMENT: Center by default */
+        th, td { padding: 14px 10px; text-align: center; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        
+        /* EXCEPT NAME: Keep Left Aligned */
+        th:first-child, td:first-child, .sticky-col { text-align: left; }
+
         th { background-color: rgba(0,0,0,0.2); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); white-space: nowrap; }
         td { font-size: 0.9rem; color: var(--text-main); }
         tr:last-child td { border-bottom: none; }
@@ -160,7 +216,7 @@
         }
         th.sticky-col { background-color: #04382c; z-index: 20; } 
         th.total-col, td.total-col { background-color: var(--total-col-bg); text-align: center; font-weight: 700; color: #ecfdf5; border-left: 1px solid var(--border-color); }
-        td:not(:first-child):not(.total-col):not(:last-child) { text-align: center; color: var(--text-muted); }
+        
         td.zero-value { opacity: 0.2; }
 
         .added-by-tag {
@@ -169,7 +225,8 @@
         }
 
         /* --- BUTTONS --- */
-        .action-cell { display: flex; gap: 5px; justify-content: flex-start; }
+        .action-cell { display: flex; gap: 5px; justify-content: center; } 
+        
         .action-btn {
             padding: 5px 8px; font-size: 0.65rem; border-radius: 4px; cursor: pointer; border: 1px solid; background: transparent; transition: all 0.2s; white-space: nowrap; text-transform: uppercase; font-weight: 600;
         }
@@ -195,16 +252,28 @@
         .modal-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 10px; color: var(--primary-color); }
         .modal-desc { color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; }
 
+        /* --- MOBILE SPECIFIC FIXES --- */
         @media (max-width: 600px) {
             body { padding: 10px; }
             .clinic-name { font-size: 2.8rem; } 
             .app-title { font-size: 0.8rem; letter-spacing: 2px; flex-direction: column; gap: 8px; }
-            #consultation-form { flex-direction: column; align-items: stretch; gap: 10px; }
-            button.submit-btn { width: 100%; }
+            #consultation-form { display: block; }
+            .form-group { width: 100%; margin-bottom: 15px; }
+            input { width: 100% !important; max-width: 100% !important; margin: 0 !important; }
+            button.submit-btn { width: 100%; margin-top: 5px; }
             .card { padding: 15px; }
             .table-header { flex-direction: column; align-items: flex-start; gap: 5px; }
             .action-cell { flex-direction: column; }
             .action-btn { width: 100%; text-align: center; padding: 8px; }
+            
+            /* Scrollable Active Users on Mobile */
+            .active-now-container {
+                justify-content: flex-start;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 10px;
+                -webkit-overflow-scrolling: touch;
+            }
         }
     </style>
 </head>
@@ -238,6 +307,15 @@
                 </button>
             </div>
         </header>
+
+        <!-- ACTIVE NOW BAR (New!) -->
+        <div class="active-now-container">
+            <span class="active-label">Active Now:</span>
+            <div id="active-users-list" style="display: contents;">
+                <!-- User chips will appear here -->
+                <span style="color:var(--text-muted); font-size:0.8rem; font-style:italic;">Loading...</span>
+            </div>
+        </div>
 
         <!-- Navigation Tabs -->
         <div class="tabs-container">
@@ -321,7 +399,7 @@
     <!-- FIREBASE INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp, doc, writeBatch } 
+        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp, doc, writeBatch, setDoc, deleteDoc } 
         from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
         // ==========================================================
@@ -344,23 +422,24 @@
         let allConsultations = [];
         let archivedConsultations = [];
         let db;
-        let currentUser = "Staff"; // Default
+        let currentUser = "Staff"; 
+        let sessionId = localStorage.getItem('clinica_session_id') || crypto.randomUUID(); // Unique per device/browser
+        localStorage.setItem('clinica_session_id', sessionId);
 
         // --- INIT & USER LOGIC ---
         
-        // 1. Check User on Load
         function checkUserIdentity() {
             const savedName = localStorage.getItem('clinica_user_name');
             if (savedName) {
                 currentUser = savedName;
                 document.getElementById('current-user-name').textContent = currentUser;
                 document.getElementById('login-modal').style.display = 'none';
+                updatePresence(); // Start heartbeat immediately
             } else {
                 document.getElementById('login-modal').style.display = 'flex';
             }
         }
 
-        // 2. Save User
         window.saveStaffName = function() {
             const input = document.getElementById('staff-name-input');
             const name = input.value.trim();
@@ -369,16 +448,14 @@
                 currentUser = name;
                 document.getElementById('current-user-name').textContent = name;
                 document.getElementById('login-modal').style.display = 'none';
-            } else {
-                alert("Please enter a name.");
-            }
+                updatePresence();
+            } else { alert("Please enter a name."); }
         }
 
-        // 3. Switch User
         window.changeUser = function() {
             if(confirm("Switch user on this device?")) {
                 localStorage.removeItem('clinica_user_name');
-                location.reload(); // Reload to show modal
+                location.reload(); 
             }
         }
 
@@ -393,23 +470,85 @@
             } catch (error) { console.error("Firebase Error:", error); }
         }
 
-        // Setup Form
         const dateInput = document.getElementById('consultation-date');
         dateInput.value = new Date().toISOString().split('T')[0];
         document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
         document.getElementById('current-year-display').textContent = `Year: ${currentYear}`;
-        checkUserIdentity(); // Run identity check
+        checkUserIdentity();
 
-        // Expose Functions
         window.switchTab = switchTab;
         window.clearPatientYear = clearPatientYear;
         window.deletePatientFully = deletePatientFully;
         window.restorePatient = restorePatient;
         window.deleteFromHistory = deleteFromHistory;
 
+        // --- PRESENCE SYSTEM (Active Now) ---
+        
+        // 1. Heartbeat: Send "I am here" every 60s
+        async function updatePresence() {
+            if (!db || !currentUser) return;
+            const presenceRef = doc(db, "presence", sessionId);
+            try {
+                await setDoc(presenceRef, {
+                    user: currentUser,
+                    lastSeen: serverTimestamp() // Server time is key
+                }, { merge: true });
+            } catch (e) { console.error("Presence Error:", e); }
+        }
+        
+        setInterval(updatePresence, 60000); // Run every minute
+        updatePresence(); // And run immediately
+
+        // 2. Cleanup on close (Best effort)
+        window.addEventListener("beforeunload", () => {
+            if (db && sessionId) deleteDoc(doc(db, "presence", sessionId));
+        });
+
+        // 3. Listen for other users
+        function listenToPresence() {
+            const q = query(collection(db, "presence"));
+            onSnapshot(q, (snapshot) => {
+                const container = document.getElementById('active-users-list');
+                const activeUsers = new Set();
+                const now = Date.now();
+
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (!data.lastSeen) return;
+                    
+                    // Convert Firestore Timestamp to JS Date
+                    // (Timestamp is null briefly on local write, wait for server response)
+                    if(!data.lastSeen.toMillis) return; 
+
+                    const lastSeenTime = data.lastSeen.toMillis();
+                    
+                    // If seen in last 2 minutes, they are "Online"
+                    if (now - lastSeenTime < 2 * 60 * 1000) {
+                        activeUsers.add(data.user);
+                    }
+                });
+
+                // Render Chips
+                if (activeUsers.size === 0) {
+                    container.innerHTML = '<span style="color:var(--text-muted); font-size:0.8rem;">None</span>';
+                } else {
+                    container.innerHTML = '';
+                    activeUsers.forEach(user => {
+                        const chip = document.createElement('span');
+                        chip.className = 'online-user';
+                        chip.innerHTML = `<span class="online-dot"></span> ${user}`;
+                        container.appendChild(chip);
+                    });
+                }
+            });
+        }
+
         // --- DATA FUNCTIONS ---
 
         function startListening() {
+            // Start Presence Listener
+            listenToPresence();
+
             const qActive = query(collection(db, "consultations"));
             onSnapshot(qActive, (snapshot) => {
                 allConsultations = [];
@@ -450,7 +589,7 @@
                 await addDoc(collection(db, "consultations"), {
                     name: name,
                     date: date,
-                    addedBy: currentUser, // SAVE THE USER NAME
+                    addedBy: currentUser,
                     timestamp: serverTimestamp()
                 });
                 
@@ -458,6 +597,8 @@
                 setTimeout(() => messageBox.textContent = '', 3000);
                 nameInput.value = '';
                 nameInput.focus();
+                // Refresh presence just in case
+                updatePresence(); 
             } catch (error) {
                 console.error("Write Error:", error);
                 messageBox.textContent = "Error saving.";
@@ -475,7 +616,7 @@
             document.getElementById(`${tabName}-view`).classList.add('active');
         }
 
-        // --- ACTIONS (With User Tracking) ---
+        // --- ACTIONS ---
         async function clearPatientYear(patientName) {
             if (!db || !confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?`)) return;
             const toDelete = allConsultations.filter(rec => {
@@ -503,7 +644,7 @@
                 const historyRef = doc(collection(db, "history"));
                 batch.set(historyRef, { 
                     name: rec.name, date: rec.date, addedBy: rec.addedBy || 'Unknown', 
-                    deletedBy: currentUser, // TRACK WHO DELETED IT
+                    deletedBy: currentUser, 
                     deletedAt: serverTimestamp() 
                 });
                 batch.delete(doc(db, "consultations", rec.id));
@@ -569,14 +710,10 @@
             sortedNames.forEach(nameKey => {
                 const records = patients[nameKey];
                 const summary = calculateSummary(records);
-                
-                // Find LAST person who updated/added a record for this patient
-                // Sort records by who was added last? We can just take the last element in array as approx
                 const lastRecord = records[records.length - 1];
                 const lastAuthor = lastRecord.addedBy || "Unknown";
 
                 const row = tbody.insertRow();
-                
                 const nameCell = row.insertCell(); 
                 nameCell.classList.add('sticky-col');
                 nameCell.innerHTML = `${nameKey} <span class="added-by-tag">By: ${lastAuthor}</span>`;
@@ -618,12 +755,9 @@
             sortedNames.forEach(nameKey => {
                 const records = patients[nameKey];
                 const realCount = records.filter(r => r.date !== 'PLACEHOLDER').length;
-                
-                // Who deleted it?
                 const deletedBy = records[0].deletedBy || "Unknown";
 
                 const row = tbody.insertRow();
-                
                 const nameCell = row.insertCell(); nameCell.textContent = nameKey;
                 const countCell = row.insertCell(); countCell.textContent = realCount;
                 const userCell = row.insertCell(); userCell.textContent = deletedBy;
