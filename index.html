@@ -440,6 +440,21 @@
             alert(`${patientName} has been restored to the Active Logbook.`);
         }
 
+        // --- ACTION 4: PERMANENT DELETE (From History) ---
+        function deleteFromHistory(patientName) {
+            if (!confirm(`Are you sure you want to PERMANENTLY delete "${patientName}" from history?\n\nThis cannot be undone.`)) {
+                return;
+            }
+
+            // Filter out records for this patient
+            archivedConsultations = archivedConsultations.filter(rec => 
+                rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()
+            );
+
+            saveData();
+            renderHistory();
+        }
+
         // --- RENDER FUNCTIONS ---
         function calculateSummary(records) {
             const counts = {};
@@ -564,11 +579,22 @@
                 countCell.textContent = realCount;
 
                 const actionCell = row.insertCell();
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'action-cell';
+
                 const restoreBtn = document.createElement('button');
                 restoreBtn.textContent = "Restore";
                 restoreBtn.className = "action-btn btn-restore";
                 restoreBtn.onclick = function() { restorePatient(nameKey); };
-                actionCell.appendChild(restoreBtn);
+
+                const deleteForeverBtn = document.createElement('button');
+                deleteForeverBtn.textContent = "Delete Forever";
+                deleteForeverBtn.className = "action-btn btn-delete";
+                deleteForeverBtn.onclick = function() { deleteFromHistory(nameKey); };
+
+                btnContainer.appendChild(restoreBtn);
+                btnContainer.appendChild(deleteForeverBtn);
+                actionCell.appendChild(btnContainer);
             });
         }
     </script>
