@@ -222,10 +222,19 @@
         }
         .table-header h2 { margin: 0; font-size: 1.25rem; color: var(--text-main); font-family: 'Playfair Display', serif; }
         
-        #current-year-display {
+        /* Year Selector Style */
+        .year-selector-container {
+            display: flex; align-items: center; gap: 10px;
             background-color: var(--input-bg); padding: 6px 12px; border-radius: 20px;
-            font-size: 0.8rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600; letter-spacing: 1px;
+            border: 1px solid var(--border-color);
         }
+        .year-selector-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; }
+        #year-select {
+            background: transparent; border: none; color: var(--primary-color);
+            font-weight: 700; font-size: 0.9rem; cursor: pointer; outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        #year-select option { background-color: var(--bg-color); color: var(--text-main); }
 
         .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); -webkit-overflow-scrolling: touch; width: 100%; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
@@ -297,7 +306,7 @@
                 margin-bottom: 15px;
             }
 
-            .clinic-name { font-size: 2.5rem; margin-top: 0; } 
+            .clinic-name { font-size: 2.8rem; margin-top: 0; } 
             .app-title { font-size: 0.8rem; letter-spacing: 2px; flex-direction: column; gap: 8px; }
             
             #consultation-form { display: block; }
@@ -390,7 +399,11 @@
             <section class="card table-card">
                 <div class="table-header">
                     <h2>Records Directory</h2>
-                    <span id="current-year-display"></span>
+                    <!-- Year Selector -->
+                    <div class="year-selector-container">
+                        <span class="year-selector-label">Viewing:</span>
+                        <select id="year-select"></select>
+                    </div>
                 </div>
                 
                 <div class="table-wrapper">
@@ -462,7 +475,9 @@
         // ==========================================================
 
         const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const currentYear = new Date().getFullYear();
+        
+        // Year Logic
+        let selectedYear = new Date().getFullYear();
         
         let allConsultations = [];
         let archivedConsultations = [];
@@ -536,7 +551,9 @@
         const dateInput = document.getElementById('consultation-date');
         dateInput.value = new Date().toISOString().split('T')[0];
         document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
-        document.getElementById('current-year-display').textContent = `Year: ${currentYear}`;
+        
+        // Init Year Selector
+        initYearSelector();
         checkUserIdentity();
 
         window.switchTab = switchTab;
@@ -544,6 +561,26 @@
         window.deletePatientFully = deletePatientFully;
         window.restorePatient = restorePatient;
         window.deleteFromHistory = deleteFromHistory;
+
+        function initYearSelector() {
+            const selector = document.getElementById('year-select');
+            const current = new Date().getFullYear();
+            const startYear = 2024;
+            
+            // Generate years up to current + 1
+            for (let y = startYear; y <= current + 1; y++) {
+                const option = document.createElement('option');
+                option.value = y;
+                option.textContent = y;
+                if(y === selectedYear) option.selected = true;
+                selector.appendChild(option);
+            }
+
+            selector.addEventListener('change', (e) => {
+                selectedYear = parseInt(e.target.value);
+                renderLogbook();
+            });
+        }
 
         // --- PRESENCE SYSTEM (Active Now) ---
         
@@ -669,12 +706,12 @@
 
         // --- ACTIONS ---
         async function clearPatientYear(patientName) {
-            if (!db || !confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?`)) return;
+            if (!db || !confirm(`Clear ONLY ${selectedYear} entries for "${patientName}"?`)) return;
             const toDelete = allConsultations.filter(rec => {
                 if (rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()) return false;
                 if (rec.date === 'PLACEHOLDER') return false; 
                 const d = new Date(rec.date + 'T00:00:00');
-                return (!isNaN(d) && d.getFullYear() === currentYear);
+                return (!isNaN(d) && d.getFullYear() === selectedYear);
             });
             const others = allConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase() && !toDelete.includes(rec));
             
@@ -730,7 +767,7 @@
             records.forEach(rec => {
                 if (rec.date === 'PLACEHOLDER') return;
                 const d = new Date(rec.date + 'T00:00:00');
-                if (!isNaN(d) && d.getFullYear() === currentYear) { counts[MONTH_NAMES[d.getMonth()]]++; total++; }
+                if (!isNaN(d) && d.getFullYear() === selectedYear) { counts[MONTH_NAMES[d.getMonth()]]++; total++; }
             });
             return { counts, total };
         }
