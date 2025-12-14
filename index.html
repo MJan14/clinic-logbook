@@ -51,7 +51,7 @@
         
         .clinic-name {
             font-family: 'Playfair Display', serif; 
-            font-size: 4.5rem; /* Much Bigger */
+            font-size: 4.5rem; 
             font-weight: 700;
             margin: 0;
             background: linear-gradient(to right, #facc15, #fef08a, #d4af37);
@@ -124,6 +124,7 @@
             margin-bottom: 20px;
             border: 1px solid rgba(255,255,255,0.05);
             width: 100%;
+            overflow: hidden; /* FIX: Prevents child elements from sticking out */
         }
 
         #consultation-form { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
@@ -132,13 +133,12 @@
         
         input {
             width: 100%; 
-            max-width: 100%; /* FIX: Prevents inputs from exceeding container */
             padding: 12px 15px; 
             background-color: var(--input-bg);
             border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;
             color: var(--text-main); transition: all 0.2s;
             -webkit-appearance: none; 
-            box-sizing: border-box; /* Ensures padding is included in width */
+            box-sizing: border-box; /* FIX: Critical for correct width calculation */
         }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg); cursor: pointer; }
         input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
@@ -250,13 +250,16 @@
         /* --- MOBILE SPECIFIC FIXES --- */
         @media (max-width: 600px) {
             body { padding: 10px; }
-            .clinic-name { font-size: 2.8rem; } /* Bigger on mobile too */
+            .clinic-name { font-size: 2.8rem; } 
             .app-title { font-size: 0.8rem; letter-spacing: 2px; flex-direction: column; gap: 8px; }
             
             #consultation-form { flex-direction: column; align-items: stretch; gap: 10px; }
             
-            /* FIX: Ensure form groups dont force width */
+            /* FIX: Ensure form groups and inputs are strictly contained */
             .form-group { width: 100%; min-width: 0; }
+            
+            /* FIX: Strict Width Control for Inputs */
+            input { width: 100% !important; max-width: 100% !important; min-width: 0 !important; }
             
             button.submit-btn { width: 100%; }
             
