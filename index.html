@@ -67,7 +67,7 @@
             display: flex; justify-content: center; align-items: center; gap: 15px;
         }
 
-        /* --- PROFILE CORNER (FIXED Z-INDEX) --- */
+        /* --- PROFILE CORNER --- */
         .profile-corner {
             position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 10px; z-index: 100;
         }
@@ -110,12 +110,12 @@
             background: var(--card-bg); border-radius: 20px; 
             box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.5);
             padding: 35px; margin-bottom: 30px; border: 1px solid var(--border-color);
-            width: 100%; overflow: hidden;
+            width: 100%; overflow: visible; 
         }
 
         /* --- INPUTS --- */
         #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
-        .form-group { flex: 1; min-width: 200px; }
+        .form-group { flex: 1; min-width: 180px; position: relative; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; }
         
         input, select {
@@ -126,9 +126,82 @@
             transition: all 0.3s; outline: none; font-family: 'Inter', sans-serif;
         }
         input:focus, select:focus { border-color: var(--primary-color); background-color: #00221a; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
-        
-        /* Dropdown Options Fix */
         option { background-color: #011c16; color: var(--text-main); } 
+
+        /* --- CUSTOM PICKER (SHARED STYLES) --- */
+        .picker-container { position: relative; }
+        .custom-display { 
+            width: 100%; padding: 15px 20px; 
+            background-color: var(--input-bg); 
+            border: 1px solid var(--border-color); border-radius: 12px; 
+            font-size: 1rem; color: var(--text-main); 
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            user-select: none; transition: all 0.3s;
+        }
+        .custom-display:hover { border-color: var(--primary-color); background-color: #00221a; }
+        .picker-dropdown {
+            position: absolute; top: 110%; left: 0; width: 100%; min-width: 280px;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            z-index: 200; display: none; padding: 15px;
+            animation: slideDown 0.2s ease-out;
+        }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* TIME PICKER SPECIFIC */
+        #time-dropdown-menu { grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+        #time-dropdown-menu.show { display: grid; }
+
+        .time-col { 
+            max-height: 200px; overflow-y: auto; 
+            text-align: center; scrollbar-width: none; 
+        }
+        .time-col::-webkit-scrollbar { width: 0; height: 0; }
+        
+        .time-option { 
+            padding: 10px; border-radius: 8px; cursor: pointer; 
+            font-weight: 500; color: var(--text-muted); transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+        .time-option:hover { background-color: rgba(16, 185, 129, 0.1); color: var(--text-main); }
+        .time-option.selected { 
+            background-color: var(--primary-color); color: #011c16; font-weight: 700; 
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+        .col-header { 
+            text-align: center; font-size: 0.7rem; color: var(--gold-accent); 
+            text-transform: uppercase; margin-bottom: 8px; font-weight: 700; letter-spacing: 1px;
+            padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* DATE PICKER SPECIFIC */
+        #date-dropdown-menu { display: none; flex-direction: column; }
+        #date-dropdown-menu.show { display: flex; }
+
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calendar-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--text-main); font-weight: 600; }
+        .calendar-nav { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; }
+        .calendar-nav:hover { background: rgba(16, 185, 129, 0.1); border-color: var(--primary-color); }
+
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .day-header { font-size: 0.7rem; color: var(--gold-accent); font-weight: 700; margin-bottom: 5px; }
+        .calendar-day { 
+            padding: 8px 0; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: var(--text-main); 
+            transition: all 0.2s;
+        }
+        .calendar-day:hover:not(.empty) { background-color: rgba(16, 185, 129, 0.1); }
+        .calendar-day.empty { cursor: default; }
+        .calendar-day.today { border: 1px solid var(--primary-color); }
+        .calendar-day.selected { 
+            background-color: var(--primary-color); color: #011c16; font-weight: 700; 
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); border: none;
+        }
+
+        /* Overlay to close pickers */
+        #picker-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 150; display: none; cursor: default;
+        }
 
         button.submit-btn {
             background: linear-gradient(135deg, var(--primary-color), #059669); color: white; border: none;
@@ -193,11 +266,15 @@
         #edit-modal, #login-modal, #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         #lock-screen { display: flex; z-index: 5000; background: #011c16; opacity: 1; }
         
-        .edit-content, .modal-content, .lock-content { background: #032f26; padding: 40px; border-radius: 24px; border: 1px solid var(--border-color); width: 90%; max-width: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); position: relative; text-align: center; }
+        .edit-content, .modal-content, .lock-content { background: #032f26; padding: 40px; border-radius: 24px; border: 1px solid var(--border-color); width: 90%; max-width: 600px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); position: relative; text-align: center; }
         .close-edit { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; }
-        .visit-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
-        .visit-info { flex: 1; font-size: 0.9rem; color: var(--text-main); }
-        .visit-actions { display: flex; gap: 5px; }
+        .visit-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; flex-wrap: wrap; }
+        .visit-info { flex: 1; font-size: 0.9rem; color: var(--text-main); min-width: 150px; }
+        .visit-actions { display: flex; gap: 5px; align-items: center; }
+        
+        /* Edit Inputs inside Modal */
+        .visit-actions input[type="date"] { width: 130px; padding: 8px; font-size: 0.8rem; margin: 0; }
+        .visit-actions input[type="time"] { width: 90px; padding: 8px; font-size: 0.8rem; margin: 0; }
 
         /* --- SIDEBAR --- */
         #active-sidebar { position: fixed; top: 0; right: -350px; width: 320px; height: 100vh; background-color: #01221b; border-left: 1px solid var(--border-color); box-shadow: -10px 0 50px rgba(0,0,0,0.8); z-index: 1001; transition: right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); padding: 30px; display: flex; flex-direction: column; }
@@ -238,7 +315,9 @@
                 width: 100%; max-width: 100%; min-width: 0; margin: 0;
                 box-sizing: border-box; padding: 12px 15px;
             }
-            input[type="date"] { width: 75% !important; margin: 0 auto !important; display: block; }
+            /* Adjusted inputs for mobile */
+            input[type="date"] { width: 100% !important; margin: 0 auto !important; display: block; }
+            
             #staff-name-input, #site-pin { margin-bottom: 25px !important; width: 100% !important; }
             button.submit-btn { width: 100%; }
             .card { padding: 20px; }
@@ -250,10 +329,20 @@
             #active-sidebar { width: 85%; right: -100%; }
             .action-cell { flex-direction: column; gap: 8px; }
             .action-btn { width: 100%; text-align: center; padding: 10px; }
+            
+            /* Modal mobile tweaks */
+            .visit-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .visit-actions { width: 100%; justify-content: space-between; }
+            .visit-actions input[type="date"] { width: 48% !important; }
+            .visit-actions input[type="time"] { width: 48% !important; }
+            .btn-edit, .btn-delete { flex: 1; }
         }
     </style>
 </head>
 <body>
+
+    <!-- OVERLAY FOR PICKERS -->
+    <div id="picker-overlay" onclick="closeAllPickers()"></div>
 
     <!-- LOCK SCREEN -->
     <div id="lock-screen">
@@ -302,7 +391,7 @@
                 </div>
             </div>
 
-            <h4 style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px; text-align:left;">VISIT HISTORY</h4>
+            <h4 style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px; text-align:left;">VISIT HISTORY & DETAILS</h4>
             <div id="edit-visits-list"></div>
         </div>
     </div>
@@ -352,14 +441,68 @@
         <div id="active-view" class="view-section active">
             <section class="card input-card">
                 <form id="consultation-form">
-                    <div class="form-group">
+                    <div class="form-group" style="flex: 2;">
                         <label for="patient-name">Patient Name</label>
                         <input type="text" id="patient-name" required placeholder="Name..." autocomplete="off">
                     </div>
+                    
+                    <!-- CUSTOM DATE PICKER -->
                     <div class="form-group">
-                        <label for="consultation-date">Date</label>
-                        <input type="date" id="consultation-date" required>
+                        <label>Date</label>
+                        <div class="picker-container" id="custom-date-picker">
+                            <!-- Hidden input holds actual value YYYY-MM-DD -->
+                            <input type="hidden" id="consultation-date" required>
+                            
+                            <div class="custom-display" onclick="toggleDatePicker()">
+                                <span id="date-display-text" style="font-weight:600; font-family:'Inter'; letter-spacing:0.5px;">--/--/----</span>
+                                <span style="opacity:0.5; font-size:0.7em;">▼</span>
+                            </div>
+
+                            <div class="picker-dropdown" id="date-dropdown-menu">
+                                <div class="calendar-header">
+                                    <button type="button" class="calendar-nav" onclick="changeMonth(-1)">←</button>
+                                    <span class="calendar-title" id="calendar-month-year">Month Year</span>
+                                    <button type="button" class="calendar-nav" onclick="changeMonth(1)">→</button>
+                                </div>
+                                <div class="calendar-grid" id="calendar-days-container">
+                                    <!-- Days will be injected here -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <!-- CUSTOM TIME PICKER -->
+                    <div class="form-group">
+                        <label>Time</label>
+                        <div class="picker-container" id="custom-time-picker">
+                            <!-- Hidden input to hold the actual value in HH:MM format (24h) for logic -->
+                            <input type="hidden" id="consultation-time" required> 
+                            
+                            <div class="custom-display" onclick="toggleTimePicker()">
+                                <span id="time-display-text" style="font-weight:600; font-family:'Inter'; letter-spacing:0.5px;">-- : -- --</span>
+                                <span style="opacity:0.5; font-size:0.7em;">▼</span>
+                            </div>
+                    
+                            <div class="picker-dropdown" id="time-dropdown-menu">
+                                <!-- Hour Col -->
+                                <div>
+                                    <div class="col-header">HR</div>
+                                    <div class="time-col" id="time-hours"></div>
+                                </div>
+                                <!-- Min Col -->
+                                <div>
+                                    <div class="col-header">MIN</div>
+                                    <div class="time-col" id="time-minutes"></div>
+                                </div>
+                                <!-- AM/PM Col -->
+                                <div>
+                                    <div class="col-header">PER</div>
+                                    <div class="time-col" id="time-periods"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <button type="submit" class="submit-btn">Add Entry</button>
                 </form>
                 <div id="message" class="message"></div>
@@ -454,6 +597,7 @@
         };
 
         const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const FULL_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const SITE_PIN = "1234";  // General Site Access PIN
         const OWNER_PIN = "0000"; // Specific Owner PIN
 
@@ -467,6 +611,231 @@
         localStorage.setItem('clinica_session_id', sessionId);
         let currentEditName = null;
         
+        // --- CUSTOM DATE PICKER STATE ---
+        let calendarViewDate = new Date(); // The month being viewed
+        let selectedDateObj = new Date();  // The actually selected date
+
+        // --- CUSTOM TIME PICKER STATE ---
+        let timeState = { hour: 12, minute: 0, period: 'AM' };
+        
+        window.closeAllPickers = function() {
+            document.getElementById('time-dropdown-menu').classList.remove('show');
+            document.getElementById('date-dropdown-menu').classList.remove('show');
+            document.getElementById('picker-overlay').style.display = 'none';
+        }
+
+        // --- TIME PICKER LOGIC ---
+        window.toggleTimePicker = function() {
+            const dropdown = document.getElementById('time-dropdown-menu');
+            const overlay = document.getElementById('picker-overlay');
+            const dateDropdown = document.getElementById('date-dropdown-menu');
+            
+            dateDropdown.classList.remove('show'); // Ensure date is closed
+
+            if(dropdown.classList.contains('show')) {
+                closeAllPickers();
+            } else {
+                dropdown.classList.add('show');
+                overlay.style.display = 'block';
+                scrollToSelection();
+            }
+        }
+
+        function initCustomTimePicker() {
+            // Populate Hours (1-12)
+            const hCol = document.getElementById('time-hours');
+            for(let i=1; i<=12; i++) {
+                const div = document.createElement('div');
+                div.className = `time-option ${i===12 ? 'selected' : ''}`;
+                div.textContent = String(i).padStart(2, '0');
+                div.onclick = (e) => selectTimeOption('hour', i, e.target);
+                hCol.appendChild(div);
+            }
+
+            // Populate Minutes (00-59)
+            const mCol = document.getElementById('time-minutes');
+            for(let i=0; i<60; i++) {
+                const div = document.createElement('div');
+                div.className = `time-option ${i===0 ? 'selected' : ''}`;
+                div.textContent = String(i).padStart(2, '0');
+                div.onclick = (e) => selectTimeOption('minute', i, e.target);
+                mCol.appendChild(div);
+            }
+
+            // Populate Period (AM/PM)
+            const pCol = document.getElementById('time-periods');
+            ['AM', 'PM'].forEach(p => {
+                const div = document.createElement('div');
+                div.className = `time-option ${p==='AM' ? 'selected' : ''}`;
+                div.textContent = p;
+                div.onclick = (e) => selectTimeOption('period', p, e.target);
+                pCol.appendChild(div);
+            });
+
+            // Set default to current time
+            const now = new Date();
+            let h = now.getHours();
+            let m = now.getMinutes();
+            let p = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            
+            updateTimeState(h, m, p);
+        }
+
+        function selectTimeOption(type, value, element) {
+            const parent = element.parentElement;
+            parent.querySelectorAll('.time-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            timeState[type] = value;
+            updateTimeDisplay();
+        }
+
+        function updateTimeState(h, m, p) {
+            timeState = { hour: h, minute: m, period: p };
+            
+            const hCol = document.getElementById('time-hours');
+            const mCol = document.getElementById('time-minutes');
+            const pCol = document.getElementById('time-periods');
+            
+            updateColSelection(hCol, String(h).padStart(2,'0'));
+            updateColSelection(mCol, String(m).padStart(2,'0'));
+            updateColSelection(pCol, p);
+
+            updateTimeDisplay();
+        }
+
+        function updateColSelection(container, text) {
+            container.querySelectorAll('.time-option').forEach(el => {
+                if(el.textContent === text) el.classList.add('selected');
+                else el.classList.remove('selected');
+            });
+        }
+
+        function updateTimeDisplay() {
+            const hStr = String(timeState.hour).padStart(2, '0');
+            const mStr = String(timeState.minute).padStart(2, '0');
+            document.getElementById('time-display-text').textContent = `${hStr}:${mStr} ${timeState.period}`;
+            
+            // 24h format for storage
+            let h24 = timeState.hour;
+            if(timeState.period === 'PM' && h24 !== 12) h24 += 12;
+            if(timeState.period === 'AM' && h24 === 12) h24 = 0;
+            const time24 = `${String(h24).padStart(2, '0')}:${mStr}`;
+            document.getElementById('consultation-time').value = time24;
+        }
+
+        function scrollToSelection() {
+            ['time-hours', 'time-minutes', 'time-periods'].forEach(id => {
+                const container = document.getElementById(id);
+                const selected = container.querySelector('.selected');
+                if(selected) {
+                    container.scrollTop = selected.offsetTop - container.offsetTop - 50;
+                }
+            });
+        }
+
+        // --- DATE PICKER LOGIC ---
+        window.toggleDatePicker = function() {
+            const dropdown = document.getElementById('date-dropdown-menu');
+            const overlay = document.getElementById('picker-overlay');
+            const timeDropdown = document.getElementById('time-dropdown-menu');
+            
+            timeDropdown.classList.remove('show'); // Ensure time is closed
+
+            if(dropdown.classList.contains('show')) {
+                closeAllPickers();
+            } else {
+                dropdown.classList.add('show');
+                overlay.style.display = 'block';
+                renderCalendar();
+            }
+        }
+
+        window.changeMonth = function(offset) {
+            calendarViewDate.setMonth(calendarViewDate.getMonth() + offset);
+            renderCalendar();
+        }
+
+        function initCustomDatePicker() {
+            // Initialize with today's date
+            selectedDateObj = new Date();
+            calendarViewDate = new Date();
+            updateDateDisplay();
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendar-days-container');
+            container.innerHTML = ''; // Clear prev
+
+            const year = calendarViewDate.getFullYear();
+            const month = calendarViewDate.getMonth();
+            const today = new Date();
+
+            // Update Header
+            document.getElementById('calendar-month-year').textContent = `${FULL_MONTHS[month]} ${year}`;
+
+            // Add Day Headers (Su, Mo, etc)
+            const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            dayNames.forEach(d => {
+                const div = document.createElement('div');
+                div.className = 'day-header';
+                div.textContent = d;
+                container.appendChild(div);
+            });
+
+            // Logic to get days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Empty slots for days before start of month
+            for(let i=0; i<firstDay; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-day empty';
+                container.appendChild(empty);
+            }
+
+            // Days
+            for(let i=1; i<=daysInMonth; i++) {
+                const div = document.createElement('div');
+                div.className = 'calendar-day';
+                div.textContent = i;
+                
+                // Check if selected
+                if(selectedDateObj.getDate() === i && 
+                   selectedDateObj.getMonth() === month && 
+                   selectedDateObj.getFullYear() === year) {
+                    div.classList.add('selected');
+                }
+                
+                // Check if today
+                if(today.getDate() === i && today.getMonth() === month && today.getFullYear() === year) {
+                    div.classList.add('today');
+                }
+
+                div.onclick = () => selectDate(i, month, year);
+                container.appendChild(div);
+            }
+        }
+
+        function selectDate(day, month, year) {
+            selectedDateObj = new Date(year, month, day);
+            updateDateDisplay();
+            closeAllPickers();
+        }
+
+        function updateDateDisplay() {
+            // YYYY-MM-DD for hidden input
+            const y = selectedDateObj.getFullYear();
+            const m = String(selectedDateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(selectedDateObj.getDate()).padStart(2, '0');
+            document.getElementById('consultation-date').value = `${y}-${m}-${d}`;
+
+            // Nice format for display (e.g., Dec 15, 2025)
+            const niceDate = selectedDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            document.getElementById('date-display-text').textContent = niceDate;
+        }
+
+
         // --- SITE LOCK ---
         window.checkSiteAccess = function() {
             const input = document.getElementById('site-pin').value;
@@ -584,8 +953,10 @@
             } catch (error) { console.error(error); }
         }
 
-        const dateInput = document.getElementById('consultation-date');
-        dateInput.value = new Date().toISOString().split('T')[0];
+        // --- INIT PICKERS ---
+        initCustomTimePicker();
+        initCustomDatePicker();
+
         document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
         
         initYearSelector();
@@ -601,7 +972,7 @@
         window.closeEditModal = closeEditModal;
         window.saveRename = saveRename;
         window.deleteVisit = deleteVisit;
-        window.updateVisitDate = updateVisitDate;
+        window.updateVisitDetails = updateVisitDetails;
 
         function initYearSelector() {
             const selector = document.getElementById('year-select');
@@ -678,19 +1049,38 @@
             e.preventDefault();
             if (!db) return;
             const nameInput = document.getElementById('patient-name');
-            const dateInput = document.getElementById('consultation-date');
+            const dateInput = document.getElementById('consultation-date'); // Hidden
+            const timeInput = document.getElementById('consultation-time'); // Hidden
             const messageBox = document.getElementById('message');
             const btn = e.target.querySelector('button');
+            
             const name = nameInput.value.trim();
             const date = dateInput.value;
-            if (!name || !date) return;
+            const time = timeInput.value;
+            
+            if (!name || !date || !time) return;
+            
             btn.disabled = true; btn.textContent = "Saving...";
+            
+            // Format time for nice message
+            const displayTime = document.getElementById('time-display-text').textContent;
+            
             try {
-                await addDoc(collection(db, "consultations"), { name, date, addedBy: currentUser, timestamp: serverTimestamp() });
-                messageBox.textContent = `✓ Synced: ${name}`;
+                // ADDED: Saving 'time' field
+                await addDoc(collection(db, "consultations"), { 
+                    name, 
+                    date, 
+                    time,
+                    addedBy: currentUser, 
+                    timestamp: serverTimestamp() 
+                });
+                messageBox.textContent = `✓ Synced: ${name} @ ${displayTime}`;
                 setTimeout(() => messageBox.textContent = '', 3000);
-                nameInput.value = ''; nameInput.focus(); updatePresence();
-            } catch (error) { messageBox.textContent = "Error saving."; } 
+                
+                nameInput.value = ''; 
+                nameInput.focus(); 
+                updatePresence();
+            } catch (error) { messageBox.textContent = "Error saving."; console.error(error); } 
             finally { btn.disabled = false; btn.textContent = "Add Entry"; }
         }
 
@@ -771,26 +1161,45 @@
             
             if(visits.length === 0) { container.innerHTML = '<p style="color:var(--text-muted);">No visits found for this year.</p>'; } 
             else {
-                visits.sort((a, b) => new Date(b.date) - new Date(a.date));
+                // Sort by date then time
+                visits.sort((a, b) => {
+                    const dateA = new Date(a.date + 'T' + (a.time || '00:00'));
+                    const dateB = new Date(b.date + 'T' + (b.time || '00:00'));
+                    return dateB - dateA; // Newest first
+                });
+
                 visits.forEach(v => {
                     const div = document.createElement('div');
                     div.className = 'visit-row';
                     
-                    // Logic for Delete button visibility (Owner only for single visits too? User said "Edit" is allowed. Usually deleting a specific bad entry is part of editing, but user said "Delete Name" is restricted. I'll allow Staff to delete single visits to fix mistakes, but keep GLOBAL delete restrictive.)
-                    // User prompt: "Staff allowed to edit". Editing implies fixing mistakes.
-                    const deleteBtnHtml = currentUserRole === 'Owner' || true ? `<button class="action-btn btn-delete" onclick="deleteVisit('${v.id}')">Delete</button>` : ''; 
+                    const timeDisplay = v.time ? formatTime(v.time) : '--:--';
+                    
+                    const deleteBtnHtml = `<button class="action-btn btn-delete" onclick="deleteVisit('${v.id}')">Del</button>`; 
                     
                     div.innerHTML = `
-                        <div class="visit-info"><strong>${v.date}</strong> <span style="font-size:0.8em; opacity:0.7;">(Added by: ${v.addedBy || '?'})</span></div>
+                        <div class="visit-info">
+                            <strong>${v.date}</strong> at <strong style="color:var(--primary-color)">${timeDisplay}</strong>
+                            <br><span style="font-size:0.7em; opacity:0.7;">(Added by: ${v.addedBy || '?'})</span>
+                        </div>
                         <div class="visit-actions">
-                            <input type="date" value="${v.date}" id="date-${v.id}" style="padding:5px; font-size:0.8rem; width:130px;">
-                            <button class="action-btn btn-edit" onclick="updateVisitDate('${v.id}')">Save</button>
+                            <input type="date" value="${v.date}" id="date-${v.id}">
+                            <input type="time" value="${v.time || ''}" id="time-${v.id}">
+                            <button class="action-btn btn-edit" onclick="updateVisitDetails('${v.id}')">Save</button>
                             ${deleteBtnHtml}
                         </div>`;
                     container.appendChild(div);
                 });
             }
             document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        // Helper to make 14:00 look like 2:00 PM (optional, simply showing HH:MM for now to match input)
+        function formatTime(timeString) {
+            const [hour, minute] = timeString.split(':');
+            const h = parseInt(hour);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12 = h % 12 || 12; 
+            return `${h12}:${minute} ${ampm}`;
         }
 
         function closeEditModal() { document.getElementById('edit-modal').style.display = 'none'; currentEditName = null; }
@@ -806,10 +1215,21 @@
             try { await batch.commit(); alert("Renamed successfully."); closeEditModal(); } catch(e) { alert("Error renaming."); }
         }
 
-        async function updateVisitDate(id) {
+        // RENAMED from updateVisitDate to updateVisitDetails to include Time
+        async function updateVisitDetails(id) {
             const newDate = document.getElementById(`date-${id}`).value;
-            if(!newDate) return;
-            try { await updateDoc(doc(db, "consultations", id), { date: newDate }); alert("Date updated."); openEditModal(currentEditName); } catch(e) { alert("Error updating date."); }
+            const newTime = document.getElementById(`time-${id}`).value;
+            
+            if(!newDate || !newTime) return;
+            
+            try { 
+                await updateDoc(doc(db, "consultations", id), { 
+                    date: newDate,
+                    time: newTime
+                }); 
+                alert("Entry updated."); 
+                openEditModal(currentEditName); 
+            } catch(e) { alert("Error updating entry."); }
         }
 
         async function deleteVisit(id) {
@@ -934,7 +1354,6 @@
                 btnContainer.appendChild(editBtn);
 
                 // Staff AND Owner can now see Clear & Delete (User Request)
-                // Removed the check: if (currentUserRole === 'Owner')
                 const clearBtn = document.createElement('button'); 
                 clearBtn.textContent = "Clear"; clearBtn.className = "action-btn btn-clear";
                 clearBtn.onclick = function() { clearPatientYear(nameKey); };
