@@ -8,6 +8,7 @@
     <style>
         /* --- LUXURY EMERALD THEME VARIABLES --- */
         :root {
+            /* Backgrounds: Pure Dark Greens (No Gray) */
             --bg-color: #011c16;        /* Deepest Jungle Green */
             --card-bg: #022c22;         /* Darker Emerald */
             --card-glass: rgba(2, 44, 34, 0.95); /* High opacity to hide gray behind */
@@ -700,7 +701,6 @@
         }
 
         async function clearPatientYear(patientName) {
-            if(prompt("Enter Admin PIN to Clear:") !== ADMIN_PIN) { alert("Wrong PIN."); return; }
             if (!db || !confirm(`Clear ONLY ${selectedYear} entries for "${patientName}"?`)) return;
             const toDelete = allConsultations.filter(rec => {
                 if (rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()) return false;
@@ -719,7 +719,6 @@
         }
 
         async function deletePatientFully(patientName) {
-            if(prompt("Enter Admin PIN to Delete:") !== ADMIN_PIN) { alert("Wrong PIN."); return; }
             if (!db || !confirm(`⚠️ DELETE "${patientName}"? Moves to History.`)) return;
             const toMove = allConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
@@ -732,7 +731,6 @@
         }
 
         async function restorePatient(patientName) {
-            if(prompt("Enter Admin PIN to Restore:") !== ADMIN_PIN) { alert("Wrong PIN."); return; }
             if (!db || !confirm(`Restore "${patientName}"?`)) return;
             const toRestore = archivedConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
@@ -745,7 +743,6 @@
         }
 
         async function deleteFromHistory(patientName) {
-            if(prompt("Enter Admin PIN to Delete Forever:") !== ADMIN_PIN) { alert("Wrong PIN."); return; }
             if (!db || !confirm(`PERMANENTLY DELETE "${patientName}"?`)) return;
             const toDelete = archivedConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
