@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Clinica Aesthetico Logbook</title>
     <!-- Imported Playfair Display for the Fancy Title -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -32,35 +32,41 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 15px; /* Reduced padding for mobile */
             display: flex;
             justify-content: center;
             min-height: 100vh;
+            overflow-x: hidden; /* Prevent whole page horizontal scroll */
         }
 
-        .main-container { width: 100%; max-width: 98%; display: flex; flex-direction: column; }
+        .main-container { 
+            width: 100%; 
+            max-width: 1400px; 
+            display: flex; 
+            flex-direction: column; 
+        }
 
         /* --- HEADER --- */
-        header { text-align: center; margin-bottom: 25px; margin-top: 10px; }
+        header { text-align: center; margin-bottom: 20px; margin-top: 5px; }
         
         .clinic-name {
-            font-family: 'Playfair Display', serif; /* Fancy Font */
-            font-size: 3rem;
+            font-family: 'Playfair Display', serif; 
+            font-size: 2.5rem; /* Slightly smaller default */
             font-weight: 700;
             margin: 0;
-            /* Gold Gradient for Fancy Look */
             background: linear-gradient(to right, #facc15, #fef08a, #d4af37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 0.5px;
             text-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+            line-height: 1.2;
         }
 
         .app-title {
             font-size: 0.9rem;
             color: var(--text-muted);
             margin-top: 5px;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 600;
             opacity: 0.8;
@@ -70,40 +76,37 @@
         .tabs-container {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Allow wrapping on very small screens */
         }
 
         .tab-btn {
             background-color: transparent;
             color: var(--text-muted);
             border: 1px solid var(--border-color);
-            padding: 10px 25px;
-            border-radius: 30px; /* More rounded/elegant */
+            padding: 10px 20px;
+            border-radius: 30px; 
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s;
-            min-width: 150px;
+            flex: 1; /* Grow to fill space on mobile */
+            max-width: 200px;
             font-family: 'Playfair Display', serif;
             letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         .tab-btn.active {
             background-color: var(--primary-color);
-            color: #022c22; /* Dark text on active button */
+            color: #022c22;
             border-color: var(--primary-color);
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
             font-weight: 700;
         }
 
-        .tab-btn:hover:not(.active) {
-            background-color: rgba(255,255,255,0.05);
-            color: var(--text-main);
-            border-color: var(--text-muted);
-        }
-
         /* --- CONTENT SECTIONS --- */
-        .view-section { display: none; }
+        .view-section { display: none; width: 100%; }
         .view-section.active { display: block; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -111,20 +114,22 @@
         .card {
             background: var(--card-bg);
             border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            padding: 30px;
-            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-bottom: 20px;
             border: 1px solid rgba(255,255,255,0.05);
+            width: 100%;
         }
 
-        #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
+        #consultation-form { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
-        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         
         input {
-            width: 100%; padding: 14px 18px; background-color: var(--input-bg);
+            width: 100%; padding: 12px 15px; background-color: var(--input-bg);
             border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;
             color: var(--text-main); transition: all 0.2s;
+            -webkit-appearance: none; /* Fix iOS input styles */
         }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg); cursor: pointer; }
         input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
@@ -132,41 +137,64 @@
         button.submit-btn {
             background: linear-gradient(135deg, var(--primary-color), #059669);
             color: white; border: none;
-            padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s; height: 50px;
+            padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; height: 48px; /* Match input height */
             text-transform: uppercase; letter-spacing: 1px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            min-width: 120px;
         }
-        button.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 15px rgba(0,0,0,0.3); filter: brightness(1.1); }
-        button.submit-btn:active { transform: translateY(0); }
+        button.submit-btn:active { transform: scale(0.98); }
         button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
         .message { margin-top: 15px; font-size: 0.9rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
 
         /* --- TABLE STYLES --- */
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
-        .table-header h2 { margin: 0; font-size: 1.5rem; color: var(--text-main); font-family: 'Playfair Display', serif; }
-        #current-year-display {
-            background-color: var(--input-bg); padding: 8px 16px; border-radius: 20px;
-            font-size: 0.85rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600; letter-spacing: 1px;
+        .table-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); 
+            flex-wrap: wrap; gap: 10px;
         }
-        #status-indicator { font-size: 0.8rem; color: var(--text-muted); margin-left: 10px; font-weight: normal; }
-
-        .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        .table-header h2 { margin: 0; font-size: 1.25rem; color: var(--text-main); font-family: 'Playfair Display', serif; }
         
-        th, td { padding: 16px 12px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        #current-year-display {
+            background-color: var(--input-bg); padding: 6px 12px; border-radius: 20px;
+            font-size: 0.8rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600; letter-spacing: 1px;
+        }
+        #status-indicator { font-size: 0.75rem; color: var(--text-muted); margin-left: 5px; font-weight: normal; display: block; margin-top: 5px; }
+
+        /* Responsive Table Wrapper */
+        .table-wrapper { 
+            overflow-x: auto; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            width: 100%;
+        }
+        
+        table { width: 100%; border-collapse: collapse; min-width: 800px; } /* Ensure it triggers scroll */
+        
+        th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         
         th {
-            background-color: rgba(0,0,0,0.2); font-weight: 600; font-size: 0.8rem;
-            text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); white-space: nowrap;
+            background-color: rgba(0,0,0,0.2); font-weight: 600; font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); white-space: nowrap;
         }
-        td { font-size: 0.95rem; color: var(--text-main); }
+        td { font-size: 0.9rem; color: var(--text-main); }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background-color: rgba(255,255,255,0.02); }
 
-        .sticky-col { position: sticky; left: 0; background-color: var(--card-bg); z-index: 10; border-right: 2px solid var(--border-color); font-weight: 600; color: var(--text-main); font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
-        th.sticky-col { background-color: #04382c; z-index: 20; } /* Slightly darker header for sticky */
+        /* Sticky Column Logic */
+        .sticky-col { 
+            position: sticky; left: 0; 
+            background-color: var(--card-bg); 
+            z-index: 10; 
+            border-right: 2px solid var(--border-color); 
+            font-weight: 600; 
+            color: var(--text-main); 
+            font-family: 'Playfair Display', serif; 
+            min-width: 140px; /* Ensure name is readable */
+        }
+        th.sticky-col { background-color: #04382c; z-index: 20; } 
         
         th.total-col, td.total-col {
             background-color: var(--total-col-bg); text-align: center; font-weight: 700;
@@ -177,36 +205,44 @@
         td.zero-value { opacity: 0.2; }
 
         /* --- ACTION BUTTONS --- */
-        .action-cell { display: flex; gap: 8px; justify-content: flex-start; }
+        .action-cell { display: flex; gap: 5px; justify-content: flex-start; }
 
         .action-btn {
-            padding: 6px 12px; font-size: 0.7rem; border-radius: 6px; cursor: pointer;
+            padding: 5px 8px; font-size: 0.65rem; border-radius: 4px; cursor: pointer;
             border: 1px solid; background: transparent; transition: all 0.2s; white-space: nowrap;
-            text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;
+            text-transform: uppercase; font-weight: 600;
         }
 
         .btn-clear { color: var(--warning-color); border-color: rgba(251, 191, 36, 0.3); }
-        .btn-clear:hover { background-color: var(--warning-color); color: #0f172a; border-color: var(--warning-color); }
-
         .btn-delete { color: var(--error-color); border-color: rgba(251, 113, 133, 0.3); }
-        .btn-delete:hover { background-color: var(--error-color); color: white; border-color: var(--error-color); }
-
         .btn-restore { color: var(--success-color); border-color: rgba(52, 211, 153, 0.3); }
-        .btn-restore:hover { background-color: var(--success-color); color: #0f172a; border-color: var(--success-color); }
         
         #config-alert {
             display: none; background-color: rgba(239, 68, 68, 0.2);
             border: 1px solid var(--error-color); color: #fca5a5; padding: 15px;
-            border-radius: 8px; margin-bottom: 20px; text-align: center;
+            border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.9rem;
         }
 
-        footer { margin-top: auto; padding-top: 30px; color: var(--text-muted); font-size: 0.8rem; opacity: 0.6; text-align: center; letter-spacing: 1px; }
+        footer { margin-top: auto; padding-top: 30px; color: var(--text-muted); font-size: 0.75rem; opacity: 0.6; text-align: center; letter-spacing: 1px; }
 
+        /* --- MOBILE SPECIFIC FIXES --- */
         @media (max-width: 600px) {
-            #consultation-form { flex-direction: column; align-items: stretch; }
+            body { padding: 10px; }
+            .clinic-name { font-size: 1.8rem; }
+            .app-title { font-size: 0.8rem; letter-spacing: 2px; }
+            
+            #consultation-form { flex-direction: column; align-items: stretch; gap: 10px; }
+            .form-group { min-width: 100%; }
             button.submit-btn { width: 100%; }
+            
+            .card { padding: 15px; }
+            .table-header { flex-direction: column; align-items: flex-start; gap: 5px; }
+            
+            /* Ensure the table doesn't break layout */
+            .table-wrapper { width: 100%; }
+            
             .action-cell { flex-direction: column; }
-            .clinic-name { font-size: 2.2rem; }
+            .action-btn { width: 100%; text-align: center; padding: 8px; }
         }
     </style>
 </head>
@@ -217,7 +253,7 @@
         <!-- Warning if config is missing -->
         <div id="config-alert">
             <strong>⚠️ Database Connection Required</strong><br>
-            Please edit the file and paste your Firebase Keys (lines 375-383) to enable Cloud Syncing.
+            Please edit the file and paste your Firebase Keys to enable Cloud Syncing.
         </div>
 
         <header>
@@ -333,20 +369,14 @@
 
         // --- INIT ---
         
-        // Check if config is pasted
-        if (firebaseConfig.apiKey.includes("PASTE_YOUR")) {
-            document.getElementById('config-alert').style.display = 'block';
-            document.getElementById('status-indicator').textContent = "● No Connection";
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            startListening();
+        } catch (error) {
+            console.error("Firebase Init Error:", error);
+            document.getElementById('status-indicator').textContent = "● Error (Check Console)";
             document.getElementById('status-indicator').style.color = "var(--error-color)";
-        } else {
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                startListening();
-            } catch (error) {
-                console.error("Firebase Init Error:", error);
-                document.getElementById('status-indicator').textContent = "● Error";
-            }
         }
 
         // Setup Form
@@ -375,6 +405,15 @@
                 renderLogbook();
                 document.getElementById('status-indicator').textContent = "● Live Linked";
                 document.getElementById('status-indicator').style.color = "var(--success-color)";
+            }, (error) => {
+                console.error("Snapshot Error:", error);
+                const status = document.getElementById('status-indicator');
+                if (error.code === 'permission-denied') {
+                    status.textContent = "● Permission Denied (Check Rules)";
+                } else {
+                    status.textContent = "● Connection Error";
+                }
+                status.style.color = "var(--error-color)";
             });
 
             // Listen to History Records
@@ -430,9 +469,6 @@
         // --- TABS LOGIC ---
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            // Find the button that was clicked (approximate since window.event is used inline)
-            // Simpler: just loop and check text or assume event bubbling. 
-            // For simplicity in this structure:
             if(tabName === 'active') document.querySelector('.tab-btn:first-child').classList.add('active');
             else document.querySelector('.tab-btn:last-child').classList.add('active');
 
@@ -440,72 +476,49 @@
             document.getElementById(`${tabName}-view`).classList.add('active');
         }
 
-        // --- ACTION 1: CLEAR YEAR (Keeps Name) ---
+        // --- ACTIONS ---
         async function clearPatientYear(patientName) {
             if (!db || !confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?\n\nThis resets the counts to 0 but KEEPS the name in the list.`)) return;
 
-            // 1. Find docs to delete (Matching Name + Year)
             const toDelete = allConsultations.filter(rec => {
                 if (rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()) return false;
-                if (rec.date === 'PLACEHOLDER') return false; // Don't delete existing placeholders yet
+                if (rec.date === 'PLACEHOLDER') return false; 
                 const d = new Date(rec.date + 'T00:00:00');
                 return (!isNaN(d) && d.getFullYear() === currentYear);
             });
 
-            // 2. Find if any docs would REMAIN for this patient
             const others = allConsultations.filter(rec => {
-                return rec.name.trim().toUpperCase() === patientName.trim().toUpperCase() && 
-                       !toDelete.includes(rec);
+                return rec.name.trim().toUpperCase() === patientName.trim().toUpperCase() && !toDelete.includes(rec);
             });
 
             const batch = writeBatch(db);
+            toDelete.forEach(rec => batch.delete(doc(db, "consultations", rec.id)));
 
-            // 3. Delete the year's records
-            toDelete.forEach(rec => {
-                batch.delete(doc(db, "consultations", rec.id));
-            });
-
-            // 4. If no records remain, add a placeholder
             if (others.length === 0) {
                 const newRef = doc(collection(db, "consultations"));
                 batch.set(newRef, { name: patientName, date: 'PLACEHOLDER', timestamp: serverTimestamp() });
             }
 
-            try {
-                await batch.commit();
-            } catch(e) { console.error(e); alert("Error clearing records."); }
+            try { await batch.commit(); } catch(e) { console.error(e); alert("Error clearing records."); }
         }
 
-        // --- ACTION 2: DELETE NAME (Moves to History) ---
         async function deletePatientFully(patientName) {
             if (!db || !confirm(`⚠️ DELETE "${patientName}"?\n\nThis will move them to History.`)) return;
 
-            // Find ALL active records for patient
             const toMove = allConsultations.filter(rec => 
                 rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
             );
 
             const batch = writeBatch(db);
-
             toMove.forEach(rec => {
-                // 1. Add to History
-                const historyRef = doc(collection(db, "history")); // New ID
-                batch.set(historyRef, {
-                    name: rec.name,
-                    date: rec.date,
-                    deletedAt: serverTimestamp()
-                });
-
-                // 2. Delete from Active
+                const historyRef = doc(collection(db, "history"));
+                batch.set(historyRef, { name: rec.name, date: rec.date, deletedAt: serverTimestamp() });
                 batch.delete(doc(db, "consultations", rec.id));
             });
 
-            try {
-                await batch.commit();
-            } catch(e) { console.error(e); alert("Error deleting patient."); }
+            try { await batch.commit(); } catch(e) { console.error(e); alert("Error deleting patient."); }
         }
 
-        // --- ACTION 3: RESTORE ---
         async function restorePatient(patientName) {
             if (!db || !confirm(`Restore "${patientName}" to Active?`)) return;
 
@@ -514,27 +527,15 @@
             );
 
             const batch = writeBatch(db);
-
             toRestore.forEach(rec => {
-                // 1. Add back to Active
                 const activeRef = doc(collection(db, "consultations"));
-                batch.set(activeRef, {
-                    name: rec.name,
-                    date: rec.date,
-                    timestamp: serverTimestamp()
-                });
-
-                // 2. Delete from History
+                batch.set(activeRef, { name: rec.name, date: rec.date, timestamp: serverTimestamp() });
                 batch.delete(doc(db, "history", rec.id));
             });
 
-            try {
-                await batch.commit();
-                alert("Restored.");
-            } catch(e) { console.error(e); alert("Error restoring."); }
+            try { await batch.commit(); alert("Restored."); } catch(e) { console.error(e); alert("Error restoring."); }
         }
 
-        // --- ACTION 4: DELETE FOREVER ---
         async function deleteFromHistory(patientName) {
             if (!db || !confirm(`PERMANENTLY DELETE "${patientName}"?\n\nThis cannot be undone.`)) return;
 
@@ -543,16 +544,12 @@
             );
 
             const batch = writeBatch(db);
-            toDelete.forEach(rec => {
-                batch.delete(doc(db, "history", rec.id));
-            });
+            toDelete.forEach(rec => batch.delete(doc(db, "history", rec.id)));
 
-            try {
-                await batch.commit();
-            } catch(e) { console.error(e); alert("Error deleting."); }
+            try { await batch.commit(); } catch(e) { console.error(e); alert("Error deleting."); }
         }
 
-        // --- RENDER FUNCTIONS (Same logic as before) ---
+        // --- RENDER FUNCTIONS ---
         function calculateSummary(records) {
             const counts = {};
             let total = 0;
@@ -663,7 +660,6 @@
 
             sortedNames.forEach(nameKey => {
                 const records = patients[nameKey];
-                // Calculate raw total of entries (ignoring placeholders)
                 const realCount = records.filter(r => r.date !== 'PLACEHOLDER').length;
 
                 const row = tbody.insertRow();
