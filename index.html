@@ -37,7 +37,7 @@
             min-height: 100vh;
         }
 
-        /* CHANGED: Increased max-width to 98% to make it "longer" (wider) */
+        /* Wide Container */
         .main-container { width: 100%; max-width: 98%; display: flex; flex-direction: column; }
 
         header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
@@ -86,7 +86,6 @@
         .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
         
-        /* CHANGED: Reduced padding slightly (12px 8px) to fit more columns */
         th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         
         th {
@@ -267,43 +266,54 @@
             renderLogbook();
         }
 
-        // --- ACTION 1: CLEAR YEAR (Removes 2025 entries only) ---
+        // --- ACTION 1: CLEAR YEAR (FIXED: Keeps Name in list) ---
         function clearPatientYear(patientName) {
-            if (!confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?\n\nOlder records will be kept.`)) {
+            if (!confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?\n\nThis resets the counts to 0 but KEEPS the name in the list.`)) {
                 return;
             }
 
-            const initialCount = allConsultations.length;
-
-            // Keep records that are NOT (Name match AND Year match)
+            // 1. Filter out ONLY records for this patient in the current year
             allConsultations = allConsultations.filter(rec => {
                 const recName = rec.name.trim().toUpperCase();
                 const targetName = patientName.trim().toUpperCase();
-                let recYear;
-                try { recYear = new Date(rec.date + 'T00:00:00').getFullYear(); } catch(e) { return true; }
+                
+                // If this is the patient we are clearing...
+                if (recName === targetName) {
+                    if (rec.date === 'PLACEHOLDER') return true; // Keep existing placeholders
 
-                // If name and year match, filter it OUT (return false)
-                return !(recName === targetName && recYear === currentYear);
+                    const d = new Date(rec.date + 'T00:00:00');
+                    // Delete if it's in the current year
+                    if (!isNaN(d) && d.getFullYear() === currentYear) {
+                        return false; 
+                    }
+                }
+                // Keep everything else
+                return true; 
             });
 
-            if (allConsultations.length === initialCount) {
-                alert("No records found to clear for this year.");
-                return;
+            // 2. CHECK if the patient still exists in the array
+            const patientExists = allConsultations.some(rec => 
+                rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
+            );
+
+            // 3. IF NO RECORDS LEFT, add a "Placeholder" so the name stays visible
+            if (!patientExists) {
+                allConsultations.push({ name: patientName, date: 'PLACEHOLDER' });
             }
 
             saveData();
             renderLogbook();
         }
 
-        // --- ACTION 2: DELETE NAME (Removes EVERYTHING for this person) ---
+        // --- ACTION 2: DELETE NAME (Removes EVERYTHING) ---
         function deletePatientFully(patientName) {
-            if (!confirm(`⚠️ PERMANENTLY DELETE "${patientName}"?\n\nThis will remove ALL records for this patient from ALL years.\nThis cannot be undone.`)) {
+            if (!confirm(`⚠️ PERMANENTLY DELETE "${patientName}"?\n\nThis will remove ALL records and REMOVE the name from the list.\nThis cannot be undone.`)) {
                 return;
             }
 
             const initialCount = allConsultations.length;
 
-            // Remove anything matching the name, regardless of year
+            // Remove anything matching the name (including placeholders)
             allConsultations = allConsultations.filter(rec => 
                 rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()
             );
@@ -322,9 +332,13 @@
             const counts = {};
             let total = 0;
             MONTH_NAMES.forEach(m => counts[m] = 0);
+            
             records.forEach(rec => {
+                // Ignore placeholder records in the math
+                if (rec.date === 'PLACEHOLDER') return;
+
                 const d = new Date(rec.date + 'T00:00:00');
-                if (d.getFullYear() === currentYear) {
+                if (!isNaN(d) && d.getFullYear() === currentYear) {
                     counts[MONTH_NAMES[d.getMonth()]]++;
                     total++;
                 }
