@@ -124,7 +124,6 @@
             border: 1px solid var(--border-color); border-radius: 12px; 
             font-size: 1rem; color: var(--text-main); 
             transition: all 0.3s; outline: none; font-family: 'Inter', sans-serif;
-            box-sizing: border-box; /* Important for width calculation */
         }
         input:focus, select:focus { border-color: var(--primary-color); background-color: #00221a; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
         
@@ -220,9 +219,16 @@
                 box-sizing: border-box; /* Strict containment */
                 padding: 12px 15px;
             }
+
+            /* Specific fix for Date Box: 75% width on mobile */
+            input[type="date"] {
+                width: 75% !important;
+                margin: 0 auto !important; /* Center it */
+                display: block;
+            }
             
             /* Fix login modal input spacing */
-            #staff-name-input { margin-bottom: 25px !important; }
+            #staff-name-input { margin-bottom: 25px !important; width: 100% !important; }
 
             button.submit-btn { width: 100%; }
             .card { padding: 20px; }
