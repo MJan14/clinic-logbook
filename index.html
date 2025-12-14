@@ -8,20 +8,29 @@
     <style>
         /* --- LUXURY EMERALD THEME VARIABLES --- */
         :root {
-            --bg-color: #011c16;
-            --card-bg: #032f26;
-            --card-glass: rgba(3, 47, 38, 0.9);
-            --primary-color: #10b981;
-            --primary-hover: #34d399;
-            --text-main: #f0fdf4;
-            --text-muted: #86efac;
-            --border-color: rgba(16, 185, 129, 0.3); 
-            --input-bg: #01221b;
-            --header-bg: #064e3b;
+            /* Backgrounds: Pure Dark Greens (No Gray) */
+            --bg-color: #011c16;        /* Deepest Jungle Green */
+            --card-bg: #022c22;         /* Darker Emerald */
+            --card-glass: rgba(2, 44, 34, 0.95); /* High opacity to hide gray behind */
+            
+            /* Accents */
+            --primary-color: #10b981;   /* Emerald */
+            --gold-accent: #d4af37;     /* Gold */
+            
+            /* Text */
+            --text-main: #f0fdf4;       /* White-Mint */
+            --text-muted: #6ee7b7;      /* Bright Mint */
+            
+            /* UI Elements */
+            --border-color: #064e3b;    /* Dark Green Border */
+            --input-bg: #012e24;        /* Rich Green Input */
+            --header-bg: #064e3b;       /* Table Header */
             --total-col-bg: #065f46;
+            
+            /* Status */
             --success-color: #34d399;
-            --error-color: #fb7185;
-            --warning-color: #fbbf24;
+            --error-color: #fb7185;     /* Rose */
+            --warning-color: #facc15;   /* Gold/Yellow */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -29,7 +38,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            background-image: linear-gradient(to bottom right, #011c16, #022c22);
+            background-image: linear-gradient(to bottom right, #011c16, #032f26);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
@@ -41,150 +50,162 @@
 
         .main-container { width: 100%; max-width: 1400px; display: flex; flex-direction: column; }
 
-        /* --- HEADER AREA --- */
-        header { text-align: center; margin-bottom: 35px; margin-top: 15px; position: relative; }
+        /* --- HEADER --- */
+        header { text-align: center; margin-bottom: 30px; margin-top: 15px; position: relative; }
         
         .clinic-name {
             font-family: 'Playfair Display', serif; font-size: 4.5rem; font-weight: 700; margin: 0;
             background: linear-gradient(to bottom right, #fde047, #d4af37, #b45309);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: -1px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.5));
+            letter-spacing: -1px; filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.5));
             line-height: 1.1; padding-bottom: 10px; position: relative; z-index: 1;
         }
 
         .app-title {
             font-size: 0.9rem; color: var(--text-muted); margin-top: 0px;
-            letter-spacing: 4px; text-transform: uppercase; font-weight: 600; opacity: 0.9;
+            letter-spacing: 4px; text-transform: uppercase; font-weight: 600; opacity: 0.8;
             display: flex; justify-content: center; align-items: center; gap: 15px;
         }
 
-        /* --- TOP RIGHT PROFILE CORNER --- */
+        /* --- PROFILE CORNER (FIXED Z-INDEX) --- */
         .profile-corner {
             position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 10px; z-index: 100;
         }
 
         .profile-pill {
-            background-color: rgba(6, 78, 59, 0.6); border: 1px solid var(--border-color);
-            backdrop-filter: blur(4px); padding: 8px 16px; border-radius: 20px;
-            font-size: 0.85rem; color: var(--text-main); display: flex; align-items: center; gap: 8px;
-            cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            background-color: rgba(6, 78, 59, 0.4); 
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px; border-radius: 20px;
+            font-size: 0.85rem; color: var(--text-main); 
+            display: flex; align-items: center; gap: 8px;
+            cursor: pointer; transition: all 0.2s ease;
         }
-        .profile-pill:hover { background-color: var(--primary-color); color: #022c22; border-color: var(--primary-color); transform: translateY(-2px); }
+        .profile-pill:hover { background-color: var(--primary-color); color: #011c16; border-color: var(--primary-color); }
 
         .pulse-dot { width: 8px; height: 8px; background-color: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        #status-indicator { font-size: 0.75rem; color: var(--text-main); font-weight: 500; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 12px; letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.1); }
+        #status-indicator { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 12px; letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.05); }
 
         /* --- TABS --- */
         .tabs-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
         .tab-btn {
             background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); 
-            padding: 12px 28px; border-radius: 30px; cursor: pointer; font-weight: 500; transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif; font-size: 0.95rem;
+            padding: 12px 30px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; letter-spacing: 0.5px;
         }
         .tab-btn:hover { background: rgba(16, 185, 129, 0.1); color: var(--text-main); border-color: var(--primary-color); }
         .tab-btn.active {
             background: var(--primary-color); color: #011c16; border-color: var(--primary-color);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); font-weight: 700;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
         }
 
-        /* --- CARDS & CONTENT --- */
-        .view-section { display: none; width: 100%; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* --- CONTENT --- */
+        .view-section { display: none; width: 100%; animation: fadeIn 0.5s ease; }
         .view-section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .card {
-            background: var(--card-glass); border-radius: 24px; box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px); padding: 35px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.05); width: 100%; overflow: hidden;
+            background: var(--card-bg); border-radius: 20px; 
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.5);
+            padding: 35px; margin-bottom: 30px; border: 1px solid var(--border-color);
+            width: 100%; overflow: hidden;
         }
 
-        /* Input Styling */
+        /* --- INPUTS (NO GRAY) --- */
         #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; }
         
         input, select {
-            width: 100%; padding: 16px 20px; background-color: var(--input-bg);
-            border: 1px solid var(--border-color); border-radius: 16px; font-size: 1rem; color: var(--text-main); 
+            width: 100%; padding: 15px 20px; 
+            background-color: var(--input-bg); /* Dark Green Background */
+            border: 1px solid var(--border-color); border-radius: 12px; 
+            font-size: 1rem; color: var(--text-main); 
             transition: all 0.3s; outline: none; font-family: 'Inter', sans-serif;
         }
-        input:focus, select:focus { border-color: var(--primary-color); background-color: #011812; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); }
-        ::placeholder { color: rgba(236, 253, 245, 0.3); }
+        input:focus, select:focus { border-color: var(--primary-color); background-color: #00221a; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
+        
+        /* Dropdown Options Fix */
+        option { background-color: #011c16; color: var(--text-main); } 
 
         button.submit-btn {
             background: linear-gradient(135deg, var(--primary-color), #059669); color: white; border: none;
-            padding: 0 35px; border-radius: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; height: 54px; 
-            text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); min-width: 160px;
+            padding: 0 40px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; height: 50px; 
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; box-shadow: 0 10px 20px rgba(0,0,0,0.3); min-width: 160px;
         }
-        button.submit-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4); filter: brightness(1.1); }
+        button.submit-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
         button.submit-btn:active { transform: scale(0.98); }
 
         .message { margin-top: 15px; font-size: 0.95rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
 
-        /* --- TABLE ELEGANCE --- */
+        /* --- TABLE --- */
         .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap:15px; }
-        .table-header h2 { margin: 0; font-size: 1.6rem; color: var(--text-main); font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
+        .table-header h2 { margin: 0; font-size: 1.5rem; color: var(--text-main); font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
         
         .controls-group { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-
-        /* Custom Year & Search */
-        .search-input {
-            background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main);
-            padding: 8px 15px; border-radius: 12px; font-size: 0.9rem; width: 200px;
-        }
-        .year-selector-container { position: relative; display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 5px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .year-selector-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; }
-        #year-select {
-            appearance: none; -webkit-appearance: none; background-color: transparent; border: none;
-            color: var(--primary-color); padding: 5px 25px 5px 5px; border-radius: 0; font-weight: 700; cursor: pointer; font-size: 1rem;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2310b981' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right center; width: auto; height: auto;
-        }
-        #year-select option { background-color: var(--bg-color); color: var(--text-main); padding: 10px; }
+        .search-input { background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 15px; border-radius: 10px; font-size: 0.9rem; width: 200px; }
+        
+        .year-selector-container { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 5px 12px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .year-selector-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; }
+        #year-select { padding: 5px; font-weight: 700; color: var(--primary-color); border: none; background: transparent; cursor: pointer; }
 
         .table-wrapper { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        th, td { padding: 20px 15px; text-align: center; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
-        th { background-color: var(--header-bg); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); }
-        td { font-size: 0.95rem; color: var(--text-main); font-variant-numeric: tabular-nums; }
-        tbody tr { transition: background-color 0.2s; }
-        tbody tr:hover { background-color: rgba(16, 185, 129, 0.08); }
-        tbody tr:last-child td { border-bottom: none; }
-
+        th, td { padding: 18px 15px; text-align: center; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        th { background-color: var(--header-bg); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); }
+        td { font-size: 0.95rem; color: var(--text-main); }
+        tbody tr:hover { background-color: rgba(16, 185, 129, 0.05); }
+        
         .sticky-col { position: sticky; left: 0; background-color: var(--card-bg); z-index: 10; border-right: 2px solid var(--border-color); font-weight: 600; color: #ffffff; font-family: 'Playfair Display', serif; min-width: 180px; text-align: left; padding-left: 25px; }
-        tbody tr:hover .sticky-col { background-color: #064e3b; filter: brightness(1.2); } 
+        tbody tr:hover .sticky-col { background-color: #064e3b; }
         th.sticky-col { background-color: var(--header-bg); z-index: 20; padding-left: 25px; text-align: left; } 
         th.total-col, td.total-col { background-color: var(--total-col-bg); font-weight: 800; color: #ffffff; border-left: 1px solid var(--border-color); font-size: 1.1rem; }
-        .added-by-tag { display: block; font-size: 0.65rem; color: var(--text-muted); font-family: 'Inter', sans-serif; font-weight: 400; opacity: 0.8; margin-top: 5px; letter-spacing: 0.5px; }
+        .added-by-tag { display: block; font-size: 0.6rem; color: var(--text-muted); font-family: 'Inter', sans-serif; font-weight: 400; opacity: 0.7; margin-top: 4px; letter-spacing: 0.5px; }
 
-        /* --- ACTION BUTTONS --- */
+        /* --- TEXT ACTION BUTTONS (NO ICONS) --- */
         .action-cell { display: flex; gap: 8px; justify-content: center; }
-        .action-btn { padding: 6px 12px; font-size: 0.7rem; border-radius: 8px; cursor: pointer; border: 1px solid; background: transparent; transition: all 0.2s; white-space: nowrap; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; font-family: 'Inter', sans-serif; }
-        .btn-edit { color: #60a5fa; border-color: rgba(96, 165, 250, 0.4); }
-        .btn-edit:hover { background-color: rgba(96, 165, 250, 0.1); color: #ffffff; border-color: #60a5fa; box-shadow: 0 0 10px rgba(96, 165, 250, 0.2); }
-        .btn-clear { color: var(--warning-color); border-color: rgba(251, 191, 36, 0.4); }
-        .btn-clear:hover { background-color: rgba(251, 191, 36, 0.1); color: #ffffff; border-color: var(--warning-color); box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
-        .btn-delete { color: var(--error-color); border-color: rgba(251, 113, 133, 0.4); }
-        .btn-delete:hover { background-color: rgba(251, 113, 133, 0.1); color: #ffffff; border-color: var(--error-color); box-shadow: 0 0 10px rgba(251, 113, 133, 0.2); }
-        .btn-restore { color: var(--success-color); border-color: rgba(52, 211, 153, 0.4); }
-        .btn-restore:hover { background-color: rgba(52, 211, 153, 0.1); color: #ffffff; border-color: var(--success-color); box-shadow: 0 0 10px rgba(52, 211, 153, 0.2); }
+        
+        .action-btn {
+            background: transparent;
+            padding: 6px 14px; 
+            font-size: 0.7rem; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            border: 1px solid var(--border-color); 
+            transition: all 0.2s; 
+            white-space: nowrap; 
+            text-transform: uppercase; 
+            font-weight: 700; 
+            letter-spacing: 0.5px; 
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-edit { color: #60a5fa; border-color: rgba(96, 165, 250, 0.3); }
+        .btn-edit:hover { background-color: rgba(96, 165, 250, 0.1); color: #ffffff; border-color: #60a5fa; }
+
+        .btn-clear { color: var(--warning-color); border-color: rgba(250, 204, 21, 0.3); }
+        .btn-clear:hover { background-color: rgba(250, 204, 21, 0.1); color: #ffffff; border-color: var(--warning-color); }
+
+        .btn-delete { color: var(--error-color); border-color: rgba(251, 113, 133, 0.3); }
+        .btn-delete:hover { background-color: rgba(251, 113, 133, 0.1); color: #ffffff; border-color: var(--error-color); }
+
+        .btn-restore { color: var(--success-color); border-color: rgba(52, 211, 153, 0.3); }
+        .btn-restore:hover { background-color: rgba(52, 211, 153, 0.1); color: #ffffff; border-color: var(--success-color); }
         
         .export-btn {
             background-color: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
         }
         .export-btn:hover { background-color: var(--primary-color); color: #011c16; }
 
-        /* --- EDIT MODAL --- */
-        #edit-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
-        .edit-content { background: #032f26; padding: 40px; border-radius: 24px; border: 1px solid var(--primary-color); width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.6); position: relative; }
-        .close-edit { position: absolute; top: 20px; right: 25px; background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; }
-        .visit-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        /* --- MODALS --- */
+        #edit-modal, #login-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        .edit-content, .modal-content { background: #032f26; padding: 40px; border-radius: 24px; border: 1px solid var(--border-color); width: 90%; max-width: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); position: relative; text-align: center; }
+        .close-edit { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; }
+        .visit-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
         .visit-info { flex: 1; font-size: 0.9rem; color: var(--text-main); }
         .visit-actions { display: flex; gap: 5px; }
-
-        #config-alert { display: none; background-color: rgba(239, 68, 68, 0.2); border: 1px solid var(--error-color); color: #fca5a5; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
-        footer { margin-top: auto; padding-top: 40px; color: var(--text-muted); font-size: 0.75rem; opacity: 0.5; text-align: center; letter-spacing: 2px; text-transform: uppercase; }
 
         /* --- SIDEBAR --- */
         #active-sidebar { position: fixed; top: 0; right: -350px; width: 320px; height: 100vh; background-color: #01221b; border-left: 1px solid var(--border-color); box-shadow: -10px 0 50px rgba(0,0,0,0.8); z-index: 1001; transition: right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); padding: 30px; display: flex; flex-direction: column; }
@@ -194,30 +215,40 @@
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
         .sidebar-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text-main); margin: 0; }
         .close-sidebar-btn { background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; line-height: 1; transition: color 0.2s; }
+        .close-sidebar-btn:hover { color: var(--error-color); }
         .online-user-card { display: flex; align-items: center; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); color: var(--text-main); font-weight: 500; }
         .online-user-card .dot { width: 10px; height: 10px; background: #4ade80; border-radius: 50%; margin-right: 15px; box-shadow: 0 0 10px #4ade80; }
 
-        /* --- LOGIN MODAL --- */
-        #login-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 2000; display: flex; justify-content: center; align-items: center; }
-        .modal-content { background: #032f26; padding: 50px; border-radius: 24px; border: 1px solid var(--primary-color); text-align: center; max-width: 450px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.6); }
-        .modal-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; color: var(--text-main); }
+        #config-alert { display: none; background-color: rgba(239, 68, 68, 0.2); border: 1px solid var(--error-color); color: #fca5a5; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        footer { margin-top: auto; padding-top: 40px; color: var(--text-muted); font-size: 0.75rem; opacity: 0.5; text-align: center; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* --- RESPONSIVE --- */
+        /* --- MOBILE --- */
         @media (max-width: 600px) {
             body { padding: 10px; }
             .clinic-name { font-size: 2.8rem; margin-top: 60px; } 
             .profile-corner { position: absolute; top: 15px; right: 15px; flex-direction: row; justify-content: flex-end; width: auto; z-index: 100; }
             #consultation-form { display: block; }
-            .form-group { width: 100%; margin-bottom: 20px; }
+            
+            /* STICT MOBILE FIX for Date Box Overflow */
+            .form-group { width: 100%; margin-bottom: 20px; min-width: 0; }
+            input, select { 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                min-width: 0 !important; 
+                margin: 0 !important; 
+                box-sizing: border-box !important;
+            }
+            
             button.submit-btn { width: 100%; }
             .card { padding: 20px; }
             .table-header { flex-direction: column; align-items: flex-start; gap: 15px; }
             .controls-group { width: 100%; justify-content: space-between; }
             .year-selector-container { flex: 1; }
             .search-input { width: 100%; margin-top: 10px; }
+            .export-btn { width: 100%; justify-content: center; margin-top: 10px; }
             #active-sidebar { width: 85%; right: -100%; }
-            .action-cell { flex-direction: column; gap: 6px; }
-            .action-btn { width: 100%; text-align: center; }
+            .action-cell { flex-direction: column; gap: 8px; }
+            .action-btn { width: 100%; text-align: center; padding: 10px; }
         }
     </style>
 </head>
@@ -226,9 +257,9 @@
     <!-- LOGIN MODAL -->
     <div id="login-modal" style="display: none;">
         <div class="modal-content">
-            <h2 class="modal-title">Staff Check-In</h2>
+            <h2 class="modal-title" style="color:var(--primary-color);">Staff Check-In</h2>
             <p style="color:var(--text-muted); margin-bottom:30px; font-size: 1.1rem;">Who is accessing the system today?</p>
-            <input type="text" id="staff-name-input" placeholder="Enter your name (e.g., Nurse Joy)" style="margin-bottom: 25px; text-align: center; font-size: 1.2rem;">
+            <input type="text" id="staff-name-input" placeholder="Enter your name..." style="margin-bottom: 25px; text-align: center; font-size: 1.2rem;">
             <button class="submit-btn" onclick="saveStaffName()">Start Session</button>
         </div>
     </div>
@@ -237,22 +268,18 @@
     <div id="edit-modal">
         <div class="edit-content">
             <button class="close-edit" onclick="closeEditModal()">×</button>
-            <h3 style="font-family:'Playfair Display', serif; font-size:1.8rem; margin-top:0;">Edit Patient Records</h3>
+            <h3 style="font-family:'Playfair Display', serif; font-size:1.8rem; margin-top:0; color:var(--text-main);">Edit Patient</h3>
             
-            <!-- Rename Section -->
             <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
-                <label style="display:block; color:var(--text-muted); font-size:0.8rem; margin-bottom:10px;">RENAME PATIENT</label>
+                <label style="display:block; color:var(--text-muted); font-size:0.8rem; margin-bottom:10px;">RENAME</label>
                 <div style="display:flex; gap:10px;">
                     <input type="text" id="edit-name-input" placeholder="Patient Name">
-                    <button class="action-btn btn-edit" onclick="saveRename()" style="min-width: 80px;">Save Name</button>
+                    <button class="action-btn btn-edit" onclick="saveRename()" style="min-width: 80px;">Save</button>
                 </div>
             </div>
 
-            <!-- Visits Section -->
-            <h4 style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">VISIT HISTORY (Current Year)</h4>
-            <div id="edit-visits-list">
-                <!-- Visits injected here -->
-            </div>
+            <h4 style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px; text-align:left;">VISIT HISTORY</h4>
+            <div id="edit-visits-list"></div>
         </div>
     </div>
 
@@ -261,7 +288,7 @@
     <div id="active-sidebar">
         <div class="sidebar-header">
             <h3 class="sidebar-title">Active Staff</h3>
-            <button class="close-sidebar-btn" onclick="toggleSidebar()">&times;</button>
+            <button class="close-sidebar-btn" onclick="toggleSidebar()">×</button>
         </div>
         <div id="active-users-list">
             <span style="color:var(--text-muted); font-style:italic;">Loading...</span>
@@ -318,13 +345,13 @@
                 <div class="table-header">
                     <h2>Records Directory</h2>
                     <div class="controls-group">
-                        <input type="text" id="search-input" class="search-input" placeholder="Search patients..." oninput="filterLogbook()">
+                        <input type="text" id="search-input" class="search-input" placeholder="Search..." oninput="filterLogbook()">
                         <div class="year-selector-container">
-                            <span class="year-selector-label">VIEWING:</span>
+                            <span class="year-selector-label">YEAR:</span>
                             <select id="year-select"></select>
                         </div>
                         <button class="export-btn" onclick="exportToCSV()">
-                            📊 Export CSV
+                            CSV
                         </button>
                     </div>
                 </div>
@@ -351,7 +378,7 @@
         <div id="history-view" class="view-section">
             <section class="card table-card">
                 <div class="table-header">
-                    <h2>Deleted Patients History</h2>
+                    <h2>Deleted Patients</h2>
                     <span style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 2px; font-weight:700;">ARCHIVE</span>
                 </div>
                 
@@ -401,12 +428,8 @@
         let currentUser = null;
         let sessionId = localStorage.getItem('clinica_session_id') || crypto.randomUUID(); 
         localStorage.setItem('clinica_session_id', sessionId);
-        
-        // Globals for editing
         let currentEditName = null;
 
-        // --- INIT ---
-        
         function checkUserIdentity() {
             const savedName = localStorage.getItem('clinica_user_name');
             if (savedName) {
@@ -475,8 +498,6 @@
         window.deleteFromHistory = deleteFromHistory;
         window.filterLogbook = filterLogbook;
         window.exportToCSV = exportToCSV;
-        
-        // Edit Functions Exposed
         window.openEditModal = openEditModal;
         window.closeEditModal = closeEditModal;
         window.saveRename = saveRename;
@@ -577,10 +598,7 @@
             document.getElementById(`${tabName}-view`).classList.add('active');
         }
 
-        // --- NEW FEATURES: FILTER & EXPORT ---
-        function filterLogbook() {
-            renderLogbook();
-        }
+        function filterLogbook() { renderLogbook(); }
 
         function exportToCSV() {
             const patients = allConsultations.reduce((acc, curr) => {
@@ -590,21 +608,15 @@
                 return acc;
             }, {});
             const sortedNames = Object.keys(patients).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Patient Name,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec,Total\n";
-
+            let csvContent = "data:text/csv;charset=utf-8,Patient Name,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec,Total\n";
             sortedNames.forEach(nameKey => {
                 const records = patients[nameKey];
-                const summary = calculateSummary(records); // Uses selectedYear
+                const summary = calculateSummary(records);
                 let row = `"${nameKey}",`;
-                MONTH_NAMES.forEach(m => {
-                    row += `${summary.counts[m]},`;
-                });
+                MONTH_NAMES.forEach(m => { row += `${summary.counts[m]},`; });
                 row += `${summary.total}\n`;
                 csvContent += row;
             });
-
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
@@ -614,94 +626,59 @@
             document.body.removeChild(link);
         }
 
-        // --- NEW FEATURE: EDIT MODAL ---
         function openEditModal(nameKey) {
             currentEditName = nameKey;
             document.getElementById('edit-name-input').value = nameKey;
-            
             const container = document.getElementById('edit-visits-list');
             container.innerHTML = '';
-
-            // Filter visits for this patient & current selected year
             const visits = allConsultations.filter(rec => {
                 const isSameName = rec.name.trim().toUpperCase() === nameKey.toUpperCase();
                 if(!isSameName || rec.date === 'PLACEHOLDER') return false;
                 const d = new Date(rec.date + 'T00:00:00');
                 return !isNaN(d) && d.getFullYear() === selectedYear;
             });
-
-            if(visits.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-muted);">No visits found for this year.</p>';
-            } else {
-                // Sort by date desc
+            if(visits.length === 0) { container.innerHTML = '<p style="color:var(--text-muted);">No visits found for this year.</p>'; } 
+            else {
                 visits.sort((a, b) => new Date(b.date) - new Date(a.date));
-                
                 visits.forEach(v => {
                     const div = document.createElement('div');
                     div.className = 'visit-row';
                     div.innerHTML = `
-                        <div class="visit-info">
-                            <strong>${v.date}</strong> <span style="font-size:0.8em; opacity:0.7;">(Added by: ${v.addedBy || '?'})</span>
-                        </div>
+                        <div class="visit-info"><strong>${v.date}</strong> <span style="font-size:0.8em; opacity:0.7;">(Added by: ${v.addedBy || '?'})</span></div>
                         <div class="visit-actions">
                             <input type="date" value="${v.date}" id="date-${v.id}" style="padding:5px; font-size:0.8rem; width:130px;">
                             <button class="action-btn btn-edit" onclick="updateVisitDate('${v.id}')">Save</button>
                             <button class="action-btn btn-delete" onclick="deleteVisit('${v.id}')">Delete</button>
-                        </div>
-                    `;
+                        </div>`;
                     container.appendChild(div);
                 });
             }
-
             document.getElementById('edit-modal').style.display = 'flex';
         }
 
-        function closeEditModal() {
-            document.getElementById('edit-modal').style.display = 'none';
-            currentEditName = null;
-        }
+        function closeEditModal() { document.getElementById('edit-modal').style.display = 'none'; currentEditName = null; }
 
         async function saveRename() {
             const newName = document.getElementById('edit-name-input').value.trim();
             if(!newName || !currentEditName || newName === currentEditName) return;
-            
             if(!confirm(`Rename "${currentEditName}" to "${newName}" for ALL records?`)) return;
-
-            // Find all docs across all years for this patient
             const toUpdate = allConsultations.filter(rec => rec.name.trim().toUpperCase() === currentEditName.toUpperCase());
             const batch = writeBatch(db);
-            
-            toUpdate.forEach(rec => {
-                const docRef = doc(db, "consultations", rec.id);
-                batch.update(docRef, { name: newName });
-            });
-
-            try {
-                await batch.commit();
-                alert("Renamed successfully.");
-                closeEditModal();
-            } catch(e) { alert("Error renaming."); }
+            toUpdate.forEach(rec => { const docRef = doc(db, "consultations", rec.id); batch.update(docRef, { name: newName }); });
+            try { await batch.commit(); alert("Renamed successfully."); closeEditModal(); } catch(e) { alert("Error renaming."); }
         }
 
         async function updateVisitDate(id) {
             const newDate = document.getElementById(`date-${id}`).value;
             if(!newDate) return;
-            try {
-                await updateDoc(doc(db, "consultations", id), { date: newDate });
-                alert("Date updated.");
-                openEditModal(currentEditName); // Refresh modal
-            } catch(e) { alert("Error updating date."); }
+            try { await updateDoc(doc(db, "consultations", id), { date: newDate }); alert("Date updated."); openEditModal(currentEditName); } catch(e) { alert("Error updating date."); }
         }
 
         async function deleteVisit(id) {
             if(!confirm("Delete this single visit?")) return;
-            try {
-                await deleteDoc(doc(db, "consultations", id));
-                openEditModal(currentEditName); // Refresh modal
-            } catch(e) { alert("Error deleting visit."); }
+            try { await deleteDoc(doc(db, "consultations", id)); openEditModal(currentEditName); } catch(e) { alert("Error deleting visit."); }
         }
 
-        // --- OLD ACTIONS ---
         async function clearPatientYear(patientName) {
             if (!db || !confirm(`Clear ONLY ${selectedYear} entries for "${patientName}"?`)) return;
             const toDelete = allConsultations.filter(rec => {
@@ -752,7 +729,6 @@
             try { await batch.commit(); } catch(e) { alert("Error."); }
         }
 
-        // --- RENDER ---
         function calculateSummary(records) {
             const counts = {}; let total = 0;
             MONTH_NAMES.forEach(m => counts[m] = 0);
@@ -767,7 +743,7 @@
         function renderLogbook() {
             const tbody = document.getElementById('logbook-body');
             const theadRow = document.querySelector('#logbook-table thead tr');
-            const searchVal = document.getElementById('search-input').value.toLowerCase(); // Get Search
+            const searchVal = document.getElementById('search-input').value.toLowerCase(); 
 
             const patients = allConsultations.reduce((acc, curr) => {
                 const key = curr.name.trim(); const upperKey = key.toUpperCase();
@@ -776,7 +752,6 @@
                 return acc;
             }, {});
             
-            // Filter keys by search term
             let sortedNames = Object.keys(patients).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
             if(searchVal) {
                 sortedNames = sortedNames.filter(name => name.toLowerCase().includes(searchVal));
@@ -812,22 +787,19 @@
                 const actionCell = row.insertCell();
                 const btnContainer = document.createElement('div'); btnContainer.className = 'action-cell';
                 
-                // Edit Button (New)
                 const editBtn = document.createElement('button');
                 editBtn.textContent = "Edit"; editBtn.className = "action-btn btn-edit";
                 editBtn.onclick = function() { openEditModal(nameKey); };
 
-                // Clear Year Button
                 const clearBtn = document.createElement('button'); 
                 clearBtn.textContent = "Clear"; clearBtn.className = "action-btn btn-clear";
                 clearBtn.onclick = function() { clearPatientYear(nameKey); };
                 
-                // Delete Name Button
                 const deleteBtn = document.createElement('button'); 
                 deleteBtn.textContent = "Delete"; deleteBtn.className = "action-btn btn-delete";
                 deleteBtn.onclick = function() { deletePatientFully(nameKey); };
 
-                btnContainer.appendChild(editBtn); // Add edit first
+                btnContainer.appendChild(editBtn); 
                 btnContainer.appendChild(clearBtn); 
                 btnContainer.appendChild(deleteBtn);
                 actionCell.appendChild(btnContainer);
