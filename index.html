@@ -4,25 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Clinica Aesthetico Logbook</title>
-    <!-- Imported Playfair Display for the Fancy Title -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <style>
-        /* --- DARK GREEN AESTHETIC VARIABLES --- */
+        /* --- VARIABLES --- */
         :root {
-            --bg-color: #022c22;       /* Very Dark Jungle Green */
-            --card-bg: #064e3b;        /* Deep Emerald Green */
-            --primary-color: #10b981;  /* Vibrant Emerald */
-            --primary-hover: #34d399;  /* Lighter Emerald */
-            --text-main: #ecfdf5;      /* Very Light Mint/White */
-            --text-muted: #a7f3d0;     /* Soft Sage Green */
-            --border-color: #065f46;   /* Dark Green Border */
-            --input-bg: #022c22;       /* Matches Background */
-            --header-bg: #022c22;      /* Table Header Background */
-            --total-col-bg: #047857;   /* Rich Green for Total Column */
-            --success-color: #34d399;  /* Emerald Green */
-            --error-color: #fb7185;    /* Soft Red/Rose */
-            --danger-bg: #881337;      /* Dark Rose */
-            --warning-color: #fbbf24;  /* Amber/Gold */
+            --bg-color: #022c22;
+            --card-bg: #064e3b;
+            --primary-color: #10b981;
+            --primary-hover: #34d399;
+            --text-main: #ecfdf5;
+            --text-muted: #a7f3d0;
+            --border-color: #065f46;
+            --input-bg: #022c22;
+            --header-bg: #022c22;
+            --total-col-bg: #047857;
+            --success-color: #34d399;
+            --error-color: #fb7185;
+            --danger-bg: #881337;
+            --warning-color: #fbbf24;
         }
 
         * { box-sizing: border-box; }
@@ -36,18 +35,13 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            overflow-x: hidden; /* Prevent whole page horizontal scroll */
+            overflow-x: hidden;
         }
 
-        .main-container { 
-            width: 100%; 
-            max-width: 1400px; 
-            display: flex; 
-            flex-direction: column; 
-        }
+        .main-container { width: 100%; max-width: 1400px; display: flex; flex-direction: column; }
 
-        /* --- HEADER --- */
-        header { text-align: center; margin-bottom: 30px; margin-top: 15px; }
+        /* --- HEADER & USER INFO --- */
+        header { text-align: center; margin-bottom: 20px; margin-top: 15px; }
         
         .clinic-name {
             font-family: 'Playfair Display', serif; 
@@ -63,68 +57,55 @@
         }
 
         .app-title {
-            font-size: 1rem;
-            color: var(--text-muted);
-            margin-top: 10px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-weight: 600;
-            opacity: 0.9;
-            /* Align items in a row */
-            display: flex;
-            justify-content: center;
+            font-size: 1rem; color: var(--text-muted); margin-top: 10px;
+            letter-spacing: 3px; text-transform: uppercase; font-weight: 600; opacity: 0.9;
+            display: flex; justify-content: center; align-items: center; gap: 15px;
+        }
+
+        /* User Badge */
+        .user-badge {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
             align-items: center;
-            gap: 15px;
+            gap: 5px;
+            text-transform: none;
+            letter-spacing: 0.5px;
+        }
+        .user-badge:hover { background-color: rgba(16, 185, 129, 0.2); }
+
+        #status-indicator { 
+            font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin: 0;
+            background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 20px;
+            letter-spacing: 0.5px; text-transform: none; display: inline-block;
         }
 
         /* --- TABS --- */
-        .tabs-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap; 
-        }
-
+        .tabs-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn {
-            background-color: transparent;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 10px 20px;
-            border-radius: 30px; 
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-            flex: 1; 
-            max-width: 200px;
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 1px;
-            white-space: nowrap;
+            background-color: transparent; color: var(--text-muted); border: 1px solid var(--border-color);
+            padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 500; transition: all 0.3s;
+            flex: 1; max-width: 200px; font-family: 'Playfair Display', serif; letter-spacing: 1px; white-space: nowrap;
         }
-
         .tab-btn.active {
-            background-color: var(--primary-color);
-            color: #022c22;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-            font-weight: 700;
+            background-color: var(--primary-color); color: #022c22; border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); font-weight: 700;
         }
 
-        /* --- CONTENT SECTIONS --- */
+        /* --- CONTENT --- */
         .view-section { display: none; width: 100%; }
         .view-section.active { display: block; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- CARDS & FORMS --- */
         .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            width: 100%;
-            overflow: hidden; /* FIX: Prevents child elements from sticking out */
+            background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); width: 100%; overflow: hidden;
         }
 
         #consultation-form { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
@@ -132,32 +113,25 @@
         .form-group label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         
         input {
-            width: 100%; 
-            padding: 12px 15px; 
-            background-color: var(--input-bg);
+            width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;
+            padding: 12px 15px; background-color: var(--input-bg);
             border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;
-            color: var(--text-main); transition: all 0.2s;
-            -webkit-appearance: none; 
-            box-sizing: border-box; /* FIX: Critical for correct width calculation */
+            color: var(--text-main); transition: all 0.2s; -webkit-appearance: none;
         }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg); cursor: pointer; }
         input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
 
         button.submit-btn {
-            background: linear-gradient(135deg, var(--primary-color), #059669);
-            color: white; border: none;
-            padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s; height: 48px; 
-            text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            min-width: 120px;
+            background: linear-gradient(135deg, var(--primary-color), #059669); color: white; border: none;
+            padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; height: 48px; 
+            text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); min-width: 120px; width: auto;
         }
         button.submit-btn:active { transform: scale(0.98); }
         button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
         .message { margin-top: 15px; font-size: 0.9rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
 
-        /* --- TABLE STYLES --- */
+        /* --- TABLE --- */
         .table-header { 
             display: flex; justify-content: space-between; align-items: center; 
             margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); 
@@ -169,105 +143,66 @@
             background-color: var(--input-bg); padding: 6px 12px; border-radius: 20px;
             font-size: 0.8rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600; letter-spacing: 1px;
         }
-        
-        /* New aligned status style */
-        #status-indicator { 
-            font-size: 0.75rem; 
-            color: var(--text-muted); 
-            font-weight: normal; 
-            margin: 0;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-            text-transform: none;
-            display: inline-block;
-        }
 
-        /* Responsive Table Wrapper */
-        .table-wrapper { 
-            overflow-x: auto; 
-            border-radius: 12px; 
-            border: 1px solid var(--border-color);
-            -webkit-overflow-scrolling: touch; 
-            width: 100%;
-        }
-        
-        table { width: 100%; border-collapse: collapse; min-width: 800px; } 
-        
+        .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); -webkit-overflow-scrolling: touch; width: 100%; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
         th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         
-        th {
-            background-color: rgba(0,0,0,0.2); font-weight: 600; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); white-space: nowrap;
-        }
+        th { background-color: rgba(0,0,0,0.2); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); white-space: nowrap; }
         td { font-size: 0.9rem; color: var(--text-main); }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background-color: rgba(255,255,255,0.02); }
 
-        /* Sticky Column Logic */
         .sticky-col { 
-            position: sticky; left: 0; 
-            background-color: var(--card-bg); 
-            z-index: 10; 
-            border-right: 2px solid var(--border-color); 
-            font-weight: 600; 
-            color: var(--text-main); 
-            font-family: 'Playfair Display', serif; 
-            min-width: 140px; 
+            position: sticky; left: 0; background-color: var(--card-bg); z-index: 10; 
+            border-right: 2px solid var(--border-color); font-weight: 600; color: var(--text-main); 
+            font-family: 'Playfair Display', serif; min-width: 140px; 
         }
         th.sticky-col { background-color: #04382c; z-index: 20; } 
-        
-        th.total-col, td.total-col {
-            background-color: var(--total-col-bg); text-align: center; font-weight: 700;
-            color: #ecfdf5; border-left: 1px solid var(--border-color);
-        }
-
+        th.total-col, td.total-col { background-color: var(--total-col-bg); text-align: center; font-weight: 700; color: #ecfdf5; border-left: 1px solid var(--border-color); }
         td:not(:first-child):not(.total-col):not(:last-child) { text-align: center; color: var(--text-muted); }
         td.zero-value { opacity: 0.2; }
 
-        /* --- ACTION BUTTONS --- */
-        .action-cell { display: flex; gap: 5px; justify-content: flex-start; }
-
-        .action-btn {
-            padding: 5px 8px; font-size: 0.65rem; border-radius: 4px; cursor: pointer;
-            border: 1px solid; background: transparent; transition: all 0.2s; white-space: nowrap;
-            text-transform: uppercase; font-weight: 600;
+        .added-by-tag {
+            display: block; font-size: 0.65rem; color: var(--text-muted); 
+            font-family: 'Inter', sans-serif; font-weight: 400; opacity: 0.7; margin-top: 2px;
         }
 
+        /* --- BUTTONS --- */
+        .action-cell { display: flex; gap: 5px; justify-content: flex-start; }
+        .action-btn {
+            padding: 5px 8px; font-size: 0.65rem; border-radius: 4px; cursor: pointer; border: 1px solid; background: transparent; transition: all 0.2s; white-space: nowrap; text-transform: uppercase; font-weight: 600;
+        }
         .btn-clear { color: var(--warning-color); border-color: rgba(251, 191, 36, 0.3); }
         .btn-delete { color: var(--error-color); border-color: rgba(251, 113, 133, 0.3); }
         .btn-restore { color: var(--success-color); border-color: rgba(52, 211, 153, 0.3); }
         
-        #config-alert {
-            display: none; background-color: rgba(239, 68, 68, 0.2);
-            border: 1px solid var(--error-color); color: #fca5a5; padding: 15px;
-            border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.9rem;
-        }
-
+        #config-alert { display: none; background-color: rgba(239, 68, 68, 0.2); border: 1px solid var(--error-color); color: #fca5a5; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.9rem; }
         footer { margin-top: auto; padding-top: 30px; color: var(--text-muted); font-size: 0.75rem; opacity: 0.6; text-align: center; letter-spacing: 1px; }
 
-        /* --- MOBILE SPECIFIC FIXES --- */
+        /* --- LOGIN MODAL --- */
+        #login-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: var(--card-bg); padding: 30px; border-radius: 16px;
+            border: 1px solid var(--primary-color); box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+            text-align: center; max-width: 400px; width: 90%;
+        }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 10px; color: var(--primary-color); }
+        .modal-desc { color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; }
+
         @media (max-width: 600px) {
             body { padding: 10px; }
             .clinic-name { font-size: 2.8rem; } 
             .app-title { font-size: 0.8rem; letter-spacing: 2px; flex-direction: column; gap: 8px; }
-            
             #consultation-form { flex-direction: column; align-items: stretch; gap: 10px; }
-            
-            /* FIX: Ensure form groups and inputs are strictly contained */
-            .form-group { width: 100%; min-width: 0; }
-            
-            /* FIX: Strict Width Control for Inputs */
-            input { width: 100% !important; max-width: 100% !important; min-width: 0 !important; }
-            
             button.submit-btn { width: 100%; }
-            
             .card { padding: 15px; }
             .table-header { flex-direction: column; align-items: flex-start; gap: 5px; }
-            
-            .table-wrapper { width: 100%; }
-            
             .action-cell { flex-direction: column; }
             .action-btn { width: 100%; text-align: center; padding: 8px; }
         }
@@ -275,17 +210,33 @@
 </head>
 <body>
 
+    <!-- LOGIN MODAL -->
+    <div id="login-modal" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Staff Check-In</h2>
+            <p class="modal-desc">Who is using this device today?</p>
+            <input type="text" id="staff-name-input" placeholder="Enter your name (e.g., Nurse Joy)" style="margin-bottom: 15px; text-align: center;">
+            <button class="submit-btn" onclick="saveStaffName()">Start Session</button>
+        </div>
+    </div>
+
     <div class="main-container">
-        
-        <!-- Warning if config is missing -->
+        <!-- Config Alert -->
         <div id="config-alert">
             <strong>⚠️ Database Connection Required</strong><br>
-            Please edit the file and paste your Firebase Keys (lines 375-383) to enable Cloud Syncing.
+            Please edit the file and paste your Firebase Keys.
         </div>
 
         <header>
             <h1 class="clinic-name">Clinica Aesthetico</h1>
-            <div class="app-title">Logbook <span id="status-indicator">● Connecting...</span></div>
+            <div class="app-title">
+                Logbook 
+                <span id="status-indicator">● Connecting...</span>
+                <!-- User Badge -->
+                <button id="user-badge" class="user-badge" onclick="changeUser()">
+                    👤 <span id="current-user-name">Guest</span> (Switch)
+                </button>
+            </div>
         </header>
 
         <!-- Navigation Tabs -->
@@ -324,13 +275,12 @@
                         <thead>
                             <tr>
                                 <th class="sticky-col">Patient Name</th>
-                                <!-- Months generated by JS -->
                                 <th class="total-col">TOTAL</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="logbook-body">
-                            <tr><td colspan="15" style="text-align:center; padding:30px;">Loading data from cloud...</td></tr>
+                            <tr><td colspan="15" style="text-align:center; padding:30px;">Loading data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -350,12 +300,13 @@
                         <thead>
                             <tr>
                                 <th>Patient Name</th>
-                                <th>Total Visits (When Deleted)</th>
+                                <th>Total Visits</th>
+                                <th>Deleted By</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="history-body">
-                             <tr><td colspan="3" style="text-align:center; padding:30px;">Loading history...</td></tr>
+                             <tr><td colspan="4" style="text-align:center; padding:30px;">Loading history...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -393,17 +344,53 @@
         let allConsultations = [];
         let archivedConsultations = [];
         let db;
+        let currentUser = "Staff"; // Default
 
-        // --- INIT ---
+        // --- INIT & USER LOGIC ---
         
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            startListening();
-        } catch (error) {
-            console.error("Firebase Init Error:", error);
-            document.getElementById('status-indicator').textContent = "● Error (Check Console)";
-            document.getElementById('status-indicator').style.color = "var(--error-color)";
+        // 1. Check User on Load
+        function checkUserIdentity() {
+            const savedName = localStorage.getItem('clinica_user_name');
+            if (savedName) {
+                currentUser = savedName;
+                document.getElementById('current-user-name').textContent = currentUser;
+                document.getElementById('login-modal').style.display = 'none';
+            } else {
+                document.getElementById('login-modal').style.display = 'flex';
+            }
+        }
+
+        // 2. Save User
+        window.saveStaffName = function() {
+            const input = document.getElementById('staff-name-input');
+            const name = input.value.trim();
+            if (name) {
+                localStorage.setItem('clinica_user_name', name);
+                currentUser = name;
+                document.getElementById('current-user-name').textContent = name;
+                document.getElementById('login-modal').style.display = 'none';
+            } else {
+                alert("Please enter a name.");
+            }
+        }
+
+        // 3. Switch User
+        window.changeUser = function() {
+            if(confirm("Switch user on this device?")) {
+                localStorage.removeItem('clinica_user_name');
+                location.reload(); // Reload to show modal
+            }
+        }
+
+        // --- FIREBASE SETUP ---
+        if (firebaseConfig.apiKey.includes("PASTE_YOUR")) {
+            document.getElementById('config-alert').style.display = 'block';
+        } else {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                startListening();
+            } catch (error) { console.error("Firebase Error:", error); }
         }
 
         // Setup Form
@@ -411,45 +398,33 @@
         dateInput.value = new Date().toISOString().split('T')[0];
         document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
         document.getElementById('current-year-display').textContent = `Year: ${currentYear}`;
-        
-        // Expose Functions Globally for Buttons
+        checkUserIdentity(); // Run identity check
+
+        // Expose Functions
         window.switchTab = switchTab;
         window.clearPatientYear = clearPatientYear;
         window.deletePatientFully = deletePatientFully;
         window.restorePatient = restorePatient;
         window.deleteFromHistory = deleteFromHistory;
 
-        // --- FUNCTIONS ---
+        // --- DATA FUNCTIONS ---
 
         function startListening() {
-            // Listen to Active Records
             const qActive = query(collection(db, "consultations"));
             onSnapshot(qActive, (snapshot) => {
                 allConsultations = [];
-                snapshot.forEach((doc) => {
-                    allConsultations.push({ id: doc.id, ...doc.data() });
-                });
+                snapshot.forEach((doc) => allConsultations.push({ id: doc.id, ...doc.data() }));
                 renderLogbook();
                 document.getElementById('status-indicator').textContent = "● Live Linked";
                 document.getElementById('status-indicator').style.color = "var(--success-color)";
             }, (error) => {
-                console.error("Snapshot Error:", error);
-                const status = document.getElementById('status-indicator');
-                if (error.code === 'permission-denied') {
-                    status.textContent = "● Permission Denied (Check Rules)";
-                } else {
-                    status.textContent = "● Connection Error";
-                }
-                status.style.color = "var(--error-color)";
+                if (error.code === 'permission-denied') document.getElementById('status-indicator').textContent = "● Permission Denied";
             });
 
-            // Listen to History Records
             const qHistory = query(collection(db, "history"));
             onSnapshot(qHistory, (snapshot) => {
                 archivedConsultations = [];
-                snapshot.forEach((doc) => {
-                    archivedConsultations.push({ id: doc.id, ...doc.data() });
-                });
+                snapshot.forEach((doc) => archivedConsultations.push({ id: doc.id, ...doc.data() }));
                 renderHistory();
             });
         }
@@ -475,6 +450,7 @@
                 await addDoc(collection(db, "consultations"), {
                     name: name,
                     date: date,
+                    addedBy: currentUser, // SAVE THE USER NAME
                     timestamp: serverTimestamp()
                 });
                 
@@ -482,113 +458,87 @@
                 setTimeout(() => messageBox.textContent = '', 3000);
                 nameInput.value = '';
                 nameInput.focus();
-
             } catch (error) {
                 console.error("Write Error:", error);
-                messageBox.textContent = "Error saving. Check console.";
-                messageBox.style.color = "var(--error-color)";
+                messageBox.textContent = "Error saving.";
             } finally {
                 btn.disabled = false;
                 btn.textContent = "Add Entry";
             }
         }
 
-        // --- TABS LOGIC ---
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if(tabName === 'active') document.querySelector('.tab-btn:first-child').classList.add('active');
             else document.querySelector('.tab-btn:last-child').classList.add('active');
-
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(`${tabName}-view`).classList.add('active');
         }
 
-        // --- ACTIONS ---
+        // --- ACTIONS (With User Tracking) ---
         async function clearPatientYear(patientName) {
-            if (!db || !confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?\n\nThis resets the counts to 0 but KEEPS the name in the list.`)) return;
-
+            if (!db || !confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?`)) return;
             const toDelete = allConsultations.filter(rec => {
                 if (rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()) return false;
                 if (rec.date === 'PLACEHOLDER') return false; 
                 const d = new Date(rec.date + 'T00:00:00');
                 return (!isNaN(d) && d.getFullYear() === currentYear);
             });
-
-            const others = allConsultations.filter(rec => {
-                return rec.name.trim().toUpperCase() === patientName.trim().toUpperCase() && !toDelete.includes(rec);
-            });
-
+            const others = allConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase() && !toDelete.includes(rec));
+            
             const batch = writeBatch(db);
             toDelete.forEach(rec => batch.delete(doc(db, "consultations", rec.id)));
-
             if (others.length === 0) {
                 const newRef = doc(collection(db, "consultations"));
-                batch.set(newRef, { name: patientName, date: 'PLACEHOLDER', timestamp: serverTimestamp() });
+                batch.set(newRef, { name: patientName, date: 'PLACEHOLDER', addedBy: currentUser, timestamp: serverTimestamp() });
             }
-
-            try { await batch.commit(); } catch(e) { console.error(e); alert("Error clearing records."); }
+            try { await batch.commit(); } catch(e) { alert("Error."); }
         }
 
         async function deletePatientFully(patientName) {
-            if (!db || !confirm(`⚠️ DELETE "${patientName}"?\n\nThis will move them to History.`)) return;
-
-            const toMove = allConsultations.filter(rec => 
-                rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
-            );
-
+            if (!db || !confirm(`⚠️ DELETE "${patientName}"? Moves to History.`)) return;
+            const toMove = allConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
             toMove.forEach(rec => {
                 const historyRef = doc(collection(db, "history"));
-                batch.set(historyRef, { name: rec.name, date: rec.date, deletedAt: serverTimestamp() });
+                batch.set(historyRef, { 
+                    name: rec.name, date: rec.date, addedBy: rec.addedBy || 'Unknown', 
+                    deletedBy: currentUser, // TRACK WHO DELETED IT
+                    deletedAt: serverTimestamp() 
+                });
                 batch.delete(doc(db, "consultations", rec.id));
             });
-
-            try { await batch.commit(); } catch(e) { console.error(e); alert("Error deleting patient."); }
+            try { await batch.commit(); } catch(e) { alert("Error."); }
         }
 
         async function restorePatient(patientName) {
-            if (!db || !confirm(`Restore "${patientName}" to Active?`)) return;
-
-            const toRestore = archivedConsultations.filter(rec => 
-                rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
-            );
-
+            if (!db || !confirm(`Restore "${patientName}"?`)) return;
+            const toRestore = archivedConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
             toRestore.forEach(rec => {
                 const activeRef = doc(collection(db, "consultations"));
-                batch.set(activeRef, { name: rec.name, date: rec.date, timestamp: serverTimestamp() });
+                batch.set(activeRef, { name: rec.name, date: rec.date, addedBy: rec.addedBy || 'Restored', timestamp: serverTimestamp() });
                 batch.delete(doc(db, "history", rec.id));
             });
-
-            try { await batch.commit(); alert("Restored."); } catch(e) { console.error(e); alert("Error restoring."); }
+            try { await batch.commit(); } catch(e) { alert("Error."); }
         }
 
         async function deleteFromHistory(patientName) {
-            if (!db || !confirm(`PERMANENTLY DELETE "${patientName}"?\n\nThis cannot be undone.`)) return;
-
-            const toDelete = archivedConsultations.filter(rec => 
-                rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
-            );
-
+            if (!db || !confirm(`PERMANENTLY DELETE "${patientName}"?`)) return;
+            const toDelete = archivedConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
             const batch = writeBatch(db);
             toDelete.forEach(rec => batch.delete(doc(db, "history", rec.id)));
-
-            try { await batch.commit(); } catch(e) { console.error(e); alert("Error deleting."); }
+            try { await batch.commit(); } catch(e) { alert("Error."); }
         }
 
-        // --- RENDER FUNCTIONS ---
+        // --- RENDER ---
         function calculateSummary(records) {
-            const counts = {};
-            let total = 0;
+            const counts = {}; let total = 0;
             MONTH_NAMES.forEach(m => counts[m] = 0);
-            
             records.forEach(rec => {
                 if (rec.date === 'PLACEHOLDER') return;
                 const d = new Date(rec.date + 'T00:00:00');
-                if (!isNaN(d) && d.getFullYear() === currentYear) {
-                    counts[MONTH_NAMES[d.getMonth()]]++;
-                    total++;
-                }
+                if (!isNaN(d) && d.getFullYear() === currentYear) { counts[MONTH_NAMES[d.getMonth()]]++; total++; }
             });
             return { counts, total };
         }
@@ -598,17 +548,15 @@
             const theadRow = document.querySelector('#logbook-table thead tr');
             
             const patients = allConsultations.reduce((acc, curr) => {
-                const key = curr.name.trim(); 
-                const upperKey = key.toUpperCase();
+                const key = curr.name.trim(); const upperKey = key.toUpperCase();
                 let existingKey = Object.keys(acc).find(k => k.toUpperCase() === upperKey);
-                if (existingKey) { acc[existingKey].push(curr); } 
-                else { acc[key] = [curr]; }
+                if (existingKey) { acc[existingKey].push(curr); } else { acc[key] = [curr]; }
                 return acc;
             }, {});
 
             const sortedNames = Object.keys(patients).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-            // Rebuild Headers
+            // Build Headers
             theadRow.innerHTML = ''; 
             const nameTh = document.createElement('th'); nameTh.textContent = "Patient Name"; nameTh.classList.add('sticky-col'); theadRow.appendChild(nameTh);
             MONTH_NAMES.forEach(m => { const th = document.createElement('th'); th.textContent = m; theadRow.appendChild(th); });
@@ -616,103 +564,80 @@
             const actionsTh = document.createElement('th'); actionsTh.textContent = "Actions"; theadRow.appendChild(actionsTh);
 
             tbody.innerHTML = '';
-
-            if (sortedNames.length === 0) {
-                const row = tbody.insertRow();
-                const cell = row.insertCell();
-                cell.colSpan = 15;
-                cell.textContent = "No active records found.";
-                cell.style.textAlign = "center"; cell.style.padding = "30px"; cell.style.color = "var(--text-muted)";
-                return;
-            }
+            if (sortedNames.length === 0) { tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding:30px; color:var(--text-muted);">No records found.</td></tr>'; return; }
 
             sortedNames.forEach(nameKey => {
                 const records = patients[nameKey];
                 const summary = calculateSummary(records);
+                
+                // Find LAST person who updated/added a record for this patient
+                // Sort records by who was added last? We can just take the last element in array as approx
+                const lastRecord = records[records.length - 1];
+                const lastAuthor = lastRecord.addedBy || "Unknown";
+
                 const row = tbody.insertRow();
                 
-                const nameCell = row.insertCell(); nameCell.textContent = nameKey; nameCell.classList.add('sticky-col');
+                const nameCell = row.insertCell(); 
+                nameCell.classList.add('sticky-col');
+                nameCell.innerHTML = `${nameKey} <span class="added-by-tag">By: ${lastAuthor}</span>`;
 
                 MONTH_NAMES.forEach(m => {
-                    const cell = row.insertCell();
-                    const count = summary.counts[m];
-                    if (count > 0) cell.textContent = count;
-                    else { cell.textContent = "-"; cell.classList.add('zero-value'); }
+                    const cell = row.insertCell(); const count = summary.counts[m];
+                    if (count > 0) cell.textContent = count; else { cell.textContent = "-"; cell.classList.add('zero-value'); }
                 });
 
                 const totalCell = row.insertCell(); totalCell.textContent = summary.total; totalCell.classList.add('total-col');
 
                 const actionCell = row.insertCell();
-                const btnContainer = document.createElement('div');
-                btnContainer.className = 'action-cell';
-
-                const clearBtn = document.createElement('button');
-                clearBtn.textContent = "Clear Year"; clearBtn.className = "action-btn btn-clear";
+                const btnContainer = document.createElement('div'); btnContainer.className = 'action-cell';
+                
+                const clearBtn = document.createElement('button'); clearBtn.textContent = "Clear Year"; clearBtn.className = "action-btn btn-clear";
                 clearBtn.onclick = function() { clearPatientYear(nameKey); };
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = "Delete Name"; deleteBtn.className = "action-btn btn-delete";
+                
+                const deleteBtn = document.createElement('button'); deleteBtn.textContent = "Delete Name"; deleteBtn.className = "action-btn btn-delete";
                 deleteBtn.onclick = function() { deletePatientFully(nameKey); };
 
-                btnContainer.appendChild(clearBtn);
-                btnContainer.appendChild(deleteBtn);
+                btnContainer.appendChild(clearBtn); btnContainer.appendChild(deleteBtn);
                 actionCell.appendChild(btnContainer);
             });
         }
 
         function renderHistory() {
             const tbody = document.getElementById('history-body');
-            
             const patients = archivedConsultations.reduce((acc, curr) => {
-                const key = curr.name.trim();
-                const upperKey = key.toUpperCase();
+                const key = curr.name.trim(); const upperKey = key.toUpperCase();
                 let existingKey = Object.keys(acc).find(k => k.toUpperCase() === upperKey);
-                if (existingKey) { acc[existingKey].push(curr); } 
-                else { acc[key] = [curr]; }
+                if (existingKey) { acc[existingKey].push(curr); } else { acc[key] = [curr]; }
                 return acc;
             }, {});
 
             const sortedNames = Object.keys(patients).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-
             tbody.innerHTML = '';
-
-            if (sortedNames.length === 0) {
-                const row = tbody.insertRow();
-                const cell = row.insertCell();
-                cell.colSpan = 3;
-                cell.textContent = "No deleted history.";
-                cell.style.textAlign = "center"; cell.style.padding = "30px"; cell.style.color = "var(--text-muted)";
-                return;
-            }
+            if (sortedNames.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">No deleted history.</td></tr>'; return; }
 
             sortedNames.forEach(nameKey => {
                 const records = patients[nameKey];
                 const realCount = records.filter(r => r.date !== 'PLACEHOLDER').length;
+                
+                // Who deleted it?
+                const deletedBy = records[0].deletedBy || "Unknown";
 
                 const row = tbody.insertRow();
                 
-                const nameCell = row.insertCell();
-                nameCell.textContent = nameKey;
-
-                const countCell = row.insertCell();
-                countCell.textContent = realCount;
+                const nameCell = row.insertCell(); nameCell.textContent = nameKey;
+                const countCell = row.insertCell(); countCell.textContent = realCount;
+                const userCell = row.insertCell(); userCell.textContent = deletedBy;
 
                 const actionCell = row.insertCell();
-                const btnContainer = document.createElement('div');
-                btnContainer.className = 'action-cell';
-
-                const restoreBtn = document.createElement('button');
-                restoreBtn.textContent = "Restore";
-                restoreBtn.className = "action-btn btn-restore";
+                const btnContainer = document.createElement('div'); btnContainer.className = 'action-cell';
+                
+                const restoreBtn = document.createElement('button'); restoreBtn.textContent = "Restore"; restoreBtn.className = "action-btn btn-restore";
                 restoreBtn.onclick = function() { restorePatient(nameKey); };
-
-                const deleteForeverBtn = document.createElement('button');
-                deleteForeverBtn.textContent = "Delete Forever";
-                deleteForeverBtn.className = "action-btn btn-delete";
+                
+                const deleteForeverBtn = document.createElement('button'); deleteForeverBtn.textContent = "Delete Forever"; deleteForeverBtn.className = "action-btn btn-delete";
                 deleteForeverBtn.onclick = function() { deleteFromHistory(nameKey); };
 
-                btnContainer.appendChild(restoreBtn);
-                btnContainer.appendChild(deleteForeverBtn);
+                btnContainer.appendChild(restoreBtn); btnContainer.appendChild(deleteForeverBtn);
                 actionCell.appendChild(btnContainer);
             });
         }
