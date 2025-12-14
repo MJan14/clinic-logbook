@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultation Logbook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- DARK THEME VARIABLES --- */
+        :root {
+            --bg-color: #0f172a;       /* Deep Slate Background */
+            --card-bg: #1e293b;        /* Lighter Slate Card */
+            --primary-color: #3b82f6;  /* Bright Blue Accent */
+            --primary-hover: #60a5fa;  /* Lighter Blue on Hover */
+            --text-main: #f1f5f9;      /* White-ish Text */
+            --text-muted: #94a3b8;     /* Gray Text */
+            --border-color: #334155;   /* Dark Border */
+            --input-bg: #020617;       /* Very Dark Input Background */
+            --header-bg: #0f172a;      /* Table Header Background */
+            --total-col-bg: #172554;   /* Dark Blue for Total Column */
+            --success-color: #34d399;  /* Green for success messages */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* --- Header Section --- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin: 0;
+            color: var(--primary-color);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* --- Card Containers --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* --- Form Styles --- */
+        #consultation-form {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--text-main);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* Dark mode calendar icon fix */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            height: 46px; /* Match input height roughly */
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            min-height: 20px;
+            color: var(--success-color);
+        }
+
+        /* --- Table Styles --- */
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--text-main);
+        }
+
+        #current-year-display {
+            background-color: var(--input-bg);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px; /* Ensures table doesn't squish too much */
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--header-bg);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        td {
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Sticky First Column for Mobile Scrolling */
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            background-color: var(--card-bg);
+            z-index: 10;
+            border-right: 2px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        th.sticky-col {
+            background-color: var(--header-bg);
+            z-index: 20;
+        }
+
+        /* Highlight Total Column */
+        th:last-child, td:last-child {
+            background-color: var(--total-col-bg);
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary-hover);
+            border-left: 1px solid var(--border-color);
+        }
+
+        td:not(:first-child):not(:last-child) {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* Zeros should be dim */
+        td.zero-value {
+            opacity: 0.3;
+        }
+
+        @media (max-width: 600px) {
+            #consultation-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <header>
+            <h1>Medical Logbook</h1>
+            <p>Consultation Tracking System</p>
+        </header>
+
+        <section class="card input-card">
+            <form id="consultation-form">
+                <div class="form-group">
+                    <label for="patient-name">Patient Name</label>
+                    <input type="text" id="patient-name" required placeholder="Ex: Alice Johnson" autocomplete="off">
+                </div>
+                
+                <div class="form-group">
+                    <label for="consultation-date">Date</label>
+                    <input type="date" id="consultation-date" required>
+                </div>
+                
+                <button type="submit">Add Entry</button>
+            </form>
+            <div id="message" class="message"></div>
+        </section>
+
+        <section class="card table-card">
+            <div class="table-header">
+                <h2>Records Directory</h2>
+                <span id="current-year-display"></span>
+            </div>
+            
+            <div class="table-wrapper">
+                <table id="logbook-table">
+                    <thead>
+                        <tr>
+                            <th class="sticky-col">Patient Name</th>
+                            <!-- Months generated by JS -->
+                            <th>TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logbook-body">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'consultationLogbookData';
+        const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const currentYear = new Date().getFullYear();
+        let allConsultations = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            setupForm();
+            renderLogbook();
+        });
+
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    allConsultations = JSON.parse(stored);
+                } catch (e) {
+                    allConsultations = [];
+                }
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(allConsultations));
+        }
+
+        function setupForm() {
+            const dateInput = document.getElementById('consultation-date');
+            // Set default date to today
+            dateInput.value = new Date().toISOString().split('T')[0];
+            
+            document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('current-year-display').textContent = `Year: ${currentYear}`;
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('patient-name');
+            const dateInput = document.getElementById('consultation-date');
+            const messageBox = document.getElementById('message');
+
+            const name = nameInput.value.trim();
+            const date = dateInput.value;
+
+            if (!name || !date) return;
+
+            // Add new record
+            allConsultations.push({ name, date });
+            saveData();
+            
+            // Show success message
+            messageBox.textContent = `✓ Successfully saved: ${name}`;
+            setTimeout(() => messageBox.textContent = '', 3000);
+
+            // Reset name only, keep date (useful for batch entry)
+            nameInput.value = '';
+            nameInput.focus();
+            
+            renderLogbook();
+        }
+
+        function calculateSummary(records) {
+            const counts = {};
+            let total = 0;
+
+            MONTH_NAMES.forEach(m => counts[m] = 0);
+
+            records.forEach(rec => {
+                // Parse date string carefully
+                const d = new Date(rec.date + 'T00:00:00');
+                if (d.getFullYear() === currentYear) {
+                    counts[MONTH_NAMES[d.getMonth()]]++;
+                    total++;
+                }
+            });
+
+            return { counts, total };
+        }
+
+        function renderLogbook() {
+            const tbody = document.getElementById('logbook-body');
+            const theadRow = document.querySelector('#logbook-table thead tr');
+            
+            // 1. Group records by Patient Name (Case Insensitive Sorting)
+            const patients = allConsultations.reduce((acc, curr) => {
+                const key = curr.name.trim(); // Use actual name as key, we'll sort case-insensitively later
+                const upperKey = key.toUpperCase();
+                
+                // Find if we already have this patient (ignoring case)
+                let existingKey = Object.keys(acc).find(k => k.toUpperCase() === upperKey);
+                
+                if (existingKey) {
+                    acc[existingKey].push(curr);
+                } else {
+                    acc[key] = [curr];
+                }
+                return acc;
+            }, {});
+
+            const sortedNames = Object.keys(patients).sort((a, b) => 
+                a.toLowerCase().localeCompare(b.toLowerCase())
+            );
+
+            // 2. Rebuild Headers (Dynamic Months)
+            // Remove old month headers if they exist (keep Name and Total)
+            while (theadRow.children.length > 2) {
+                theadRow.removeChild(theadRow.children[1]);
+            }
+            // Insert Months
+            const totalTh = theadRow.lastElementChild;
+            MONTH_NAMES.forEach(m => {
+                const th = document.createElement('th');
+                th.textContent = m;
+                theadRow.insertBefore(th, totalTh);
+            });
+
+            // 3. Rebuild Body
+            tbody.innerHTML = '';
+
+            if (sortedNames.length === 0) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 14;
+                cell.textContent = "No records found for " + currentYear;
+                cell.style.textAlign = "center";
+                cell.style.padding = "30px";
+                cell.style.color = "var(--text-muted)";
+                return;
+            }
+
+            sortedNames.forEach(nameKey => {
+                const records = patients[nameKey];
+                const summary = calculateSummary(records);
+                const row = tbody.insertRow();
+                
+                // Name Column
+                const nameCell = row.insertCell();
+                nameCell.textContent = nameKey; // Display the name exactly as typed
+                nameCell.classList.add('sticky-col');
+
+                // Month Columns
+                MONTH_NAMES.forEach(m => {
+                    const cell = row.insertCell();
+                    const count = summary.counts[m];
+                    
+                    if (count > 0) {
+                        cell.textContent = count;
+                    } else {
+                        cell.textContent = "-";
+                        cell.classList.add('zero-value'); // Make hyphens dimmer
+                    }
+                });
+
+                // Total Column
+                const totalCell = row.insertCell();
+                totalCell.textContent = summary.total;
+            });
+        }
+    </script>
+</body>
+</html>
