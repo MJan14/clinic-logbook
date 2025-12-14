@@ -32,7 +32,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 15px; /* Reduced padding for mobile */
+            padding: 15px;
             display: flex;
             justify-content: center;
             min-height: 100vh;
@@ -47,29 +47,34 @@
         }
 
         /* --- HEADER --- */
-        header { text-align: center; margin-bottom: 20px; margin-top: 5px; }
+        header { text-align: center; margin-bottom: 30px; margin-top: 15px; }
         
         .clinic-name {
             font-family: 'Playfair Display', serif; 
-            font-size: 2.5rem; /* Slightly smaller default */
+            font-size: 4.5rem; /* Much Bigger */
             font-weight: 700;
             margin: 0;
             background: linear-gradient(to right, #facc15, #fef08a, #d4af37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 0.5px;
+            letter-spacing: -1px;
             text-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .app-title {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--text-muted);
-            margin-top: 5px;
+            margin-top: 10px;
             letter-spacing: 3px;
             text-transform: uppercase;
             font-weight: 600;
-            opacity: 0.8;
+            opacity: 0.9;
+            /* Align items in a row */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
         }
 
         /* --- TABS --- */
@@ -78,7 +83,7 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
-            flex-wrap: wrap; /* Allow wrapping on very small screens */
+            flex-wrap: wrap; 
         }
 
         .tab-btn {
@@ -90,7 +95,7 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s;
-            flex: 1; /* Grow to fill space on mobile */
+            flex: 1; 
             max-width: 200px;
             font-family: 'Playfair Display', serif;
             letter-spacing: 1px;
@@ -126,10 +131,14 @@
         .form-group label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         
         input {
-            width: 100%; padding: 12px 15px; background-color: var(--input-bg);
+            width: 100%; 
+            max-width: 100%; /* FIX: Prevents inputs from exceeding container */
+            padding: 12px 15px; 
+            background-color: var(--input-bg);
             border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;
             color: var(--text-main); transition: all 0.2s;
-            -webkit-appearance: none; /* Fix iOS input styles */
+            -webkit-appearance: none; 
+            box-sizing: border-box; /* Ensures padding is included in width */
         }
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg); cursor: pointer; }
         input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
@@ -138,7 +147,7 @@
             background: linear-gradient(135deg, var(--primary-color), #059669);
             color: white; border: none;
             padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s; height: 48px; /* Match input height */
+            transition: all 0.2s; height: 48px; 
             text-transform: uppercase; letter-spacing: 1px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             min-width: 120px;
@@ -160,18 +169,31 @@
             background-color: var(--input-bg); padding: 6px 12px; border-radius: 20px;
             font-size: 0.8rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600; letter-spacing: 1px;
         }
-        #status-indicator { font-size: 0.75rem; color: var(--text-muted); margin-left: 5px; font-weight: normal; display: block; margin-top: 5px; }
+        
+        /* New aligned status style */
+        #status-indicator { 
+            font-size: 0.75rem; 
+            color: var(--text-muted); 
+            font-weight: normal; 
+            margin: 0;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: none;
+            display: inline-block;
+        }
 
         /* Responsive Table Wrapper */
         .table-wrapper { 
             overflow-x: auto; 
             border-radius: 12px; 
             border: 1px solid var(--border-color);
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch; 
             width: 100%;
         }
         
-        table { width: 100%; border-collapse: collapse; min-width: 800px; } /* Ensure it triggers scroll */
+        table { width: 100%; border-collapse: collapse; min-width: 800px; } 
         
         th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         
@@ -192,7 +214,7 @@
             font-weight: 600; 
             color: var(--text-main); 
             font-family: 'Playfair Display', serif; 
-            min-width: 140px; /* Ensure name is readable */
+            min-width: 140px; 
         }
         th.sticky-col { background-color: #04382c; z-index: 20; } 
         
@@ -228,17 +250,19 @@
         /* --- MOBILE SPECIFIC FIXES --- */
         @media (max-width: 600px) {
             body { padding: 10px; }
-            .clinic-name { font-size: 1.8rem; }
-            .app-title { font-size: 0.8rem; letter-spacing: 2px; }
+            .clinic-name { font-size: 2.8rem; } /* Bigger on mobile too */
+            .app-title { font-size: 0.8rem; letter-spacing: 2px; flex-direction: column; gap: 8px; }
             
             #consultation-form { flex-direction: column; align-items: stretch; gap: 10px; }
-            .form-group { min-width: 100%; }
+            
+            /* FIX: Ensure form groups dont force width */
+            .form-group { width: 100%; min-width: 0; }
+            
             button.submit-btn { width: 100%; }
             
             .card { padding: 15px; }
             .table-header { flex-direction: column; align-items: flex-start; gap: 5px; }
             
-            /* Ensure the table doesn't break layout */
             .table-wrapper { width: 100%; }
             
             .action-cell { flex-direction: column; }
@@ -253,7 +277,7 @@
         <!-- Warning if config is missing -->
         <div id="config-alert">
             <strong>⚠️ Database Connection Required</strong><br>
-            Please edit the file and paste your Firebase Keys to enable Cloud Syncing.
+            Please edit the file and paste your Firebase Keys (lines 375-383) to enable Cloud Syncing.
         </div>
 
         <header>
