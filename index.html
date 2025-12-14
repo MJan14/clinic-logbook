@@ -8,6 +8,7 @@
     <style>
         /* --- LUXURY EMERALD THEME VARIABLES --- */
         :root {
+            /* Backgrounds: Pure Dark Greens (No Gray) */
             --bg-color: #011c16;        /* Deepest Jungle Green */
             --card-bg: #022c22;         /* Darker Emerald */
             --card-glass: rgba(2, 44, 34, 0.95); /* High opacity to hide gray behind */
@@ -66,7 +67,7 @@
             display: flex; justify-content: center; align-items: center; gap: 15px;
         }
 
-        /* --- PROFILE CORNER --- */
+        /* --- PROFILE CORNER (FIXED Z-INDEX) --- */
         .profile-corner {
             position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 10px; z-index: 100;
         }
@@ -112,19 +113,22 @@
             width: 100%; overflow: hidden;
         }
 
-        /* --- INPUTS --- */
+        /* --- INPUTS (NO GRAY) --- */
         #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; }
         
         input, select {
             width: 100%; padding: 15px 20px; 
-            background-color: var(--input-bg);
+            background-color: var(--input-bg); /* Dark Green Background */
             border: 1px solid var(--border-color); border-radius: 12px; 
             font-size: 1rem; color: var(--text-main); 
             transition: all 0.3s; outline: none; font-family: 'Inter', sans-serif;
+            box-sizing: border-box; /* Important for width calculation */
         }
         input:focus, select:focus { border-color: var(--primary-color); background-color: #00221a; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
+        
+        /* Dropdown Options Fix */
         option { background-color: #011c16; color: var(--text-main); } 
 
         button.submit-btn {
@@ -209,12 +213,12 @@
             /* MOBILE FIXES */
             .form-group { width: 100%; margin-bottom: 20px; min-width: 0; }
             input, select { 
-                width: 100% !important; 
-                max-width: 100% !important; 
-                min-width: 0 !important; 
-                margin: 0 !important; 
-                box-sizing: border-box !important;
-                padding: 12px 15px; /* Slightly smaller padding */
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                margin: 0;
+                box-sizing: border-box; /* Strict containment */
+                padding: 12px 15px;
             }
             
             /* Fix login modal input spacing */
