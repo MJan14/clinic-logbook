@@ -8,7 +8,6 @@
     <style>
         /* --- LUXURY EMERALD THEME VARIABLES --- */
         :root {
-            /* Backgrounds: Pure Dark Greens (No Gray) */
             --bg-color: #011c16;        /* Deepest Jungle Green */
             --card-bg: #022c22;         /* Darker Emerald */
             --card-glass: rgba(2, 44, 34, 0.95); /* High opacity to hide gray behind */
@@ -67,7 +66,7 @@
             display: flex; justify-content: center; align-items: center; gap: 15px;
         }
 
-        /* --- PROFILE CORNER (FIXED Z-INDEX) --- */
+        /* --- PROFILE CORNER --- */
         .profile-corner {
             position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 10px; z-index: 100;
         }
@@ -113,21 +112,19 @@
             width: 100%; overflow: hidden;
         }
 
-        /* --- INPUTS (NO GRAY) --- */
+        /* --- INPUTS --- */
         #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; }
         
         input, select {
             width: 100%; padding: 15px 20px; 
-            background-color: var(--input-bg); /* Dark Green Background */
+            background-color: var(--input-bg);
             border: 1px solid var(--border-color); border-radius: 12px; 
             font-size: 1rem; color: var(--text-main); 
             transition: all 0.3s; outline: none; font-family: 'Inter', sans-serif;
         }
         input:focus, select:focus { border-color: var(--primary-color); background-color: #00221a; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
-        
-        /* Dropdown Options Fix */
         option { background-color: #011c16; color: var(--text-main); } 
 
         button.submit-btn {
@@ -164,39 +161,19 @@
         th.total-col, td.total-col { background-color: var(--total-col-bg); font-weight: 800; color: #ffffff; border-left: 1px solid var(--border-color); font-size: 1.1rem; }
         .added-by-tag { display: block; font-size: 0.6rem; color: var(--text-muted); font-family: 'Inter', sans-serif; font-weight: 400; opacity: 0.7; margin-top: 4px; letter-spacing: 0.5px; }
 
-        /* --- TEXT ACTION BUTTONS (NO ICONS) --- */
+        /* --- ACTION BUTTONS --- */
         .action-cell { display: flex; gap: 8px; justify-content: center; }
-        
-        .action-btn {
-            background: transparent;
-            padding: 6px 14px; 
-            font-size: 0.7rem; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            border: 1px solid var(--border-color); 
-            transition: all 0.2s; 
-            white-space: nowrap; 
-            text-transform: uppercase; 
-            font-weight: 700; 
-            letter-spacing: 0.5px; 
-            font-family: 'Inter', sans-serif;
-        }
-
+        .action-btn { background: transparent; padding: 6px 14px; font-size: 0.7rem; border-radius: 8px; cursor: pointer; border: 1px solid var(--border-color); transition: all 0.2s; white-space: nowrap; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; font-family: 'Inter', sans-serif; }
         .btn-edit { color: #60a5fa; border-color: rgba(96, 165, 250, 0.3); }
         .btn-edit:hover { background-color: rgba(96, 165, 250, 0.1); color: #ffffff; border-color: #60a5fa; }
-
         .btn-clear { color: var(--warning-color); border-color: rgba(250, 204, 21, 0.3); }
         .btn-clear:hover { background-color: rgba(250, 204, 21, 0.1); color: #ffffff; border-color: var(--warning-color); }
-
         .btn-delete { color: var(--error-color); border-color: rgba(251, 113, 133, 0.3); }
         .btn-delete:hover { background-color: rgba(251, 113, 133, 0.1); color: #ffffff; border-color: var(--error-color); }
-
         .btn-restore { color: var(--success-color); border-color: rgba(52, 211, 153, 0.3); }
         .btn-restore:hover { background-color: rgba(52, 211, 153, 0.1); color: #ffffff; border-color: var(--success-color); }
         
-        .export-btn {
-            background-color: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
-        }
+        .export-btn { background-color: var(--card-bg); color: var(--text-muted); border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
         .export-btn:hover { background-color: var(--primary-color); color: #011c16; }
 
         /* --- MODALS --- */
@@ -229,7 +206,7 @@
             .profile-corner { position: absolute; top: 15px; right: 15px; flex-direction: row; justify-content: flex-end; width: auto; z-index: 100; }
             #consultation-form { display: block; }
             
-            /* STICT MOBILE FIX for Date Box Overflow */
+            /* MOBILE FIXES */
             .form-group { width: 100%; margin-bottom: 20px; min-width: 0; }
             input, select { 
                 width: 100% !important; 
@@ -237,8 +214,12 @@
                 min-width: 0 !important; 
                 margin: 0 !important; 
                 box-sizing: border-box !important;
+                padding: 12px 15px; /* Slightly smaller padding */
             }
             
+            /* Fix login modal input spacing */
+            #staff-name-input { margin-bottom: 25px !important; }
+
             button.submit-btn { width: 100%; }
             .card { padding: 20px; }
             .table-header { flex-direction: column; align-items: flex-start; gap: 15px; }
