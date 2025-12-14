@@ -139,6 +139,7 @@
         }
         button.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 15px rgba(0,0,0,0.3); filter: brightness(1.1); }
         button.submit-btn:active { transform: translateY(0); }
+        button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
         .message { margin-top: 15px; font-size: 0.9rem; font-weight: 500; min-height: 20px; color: var(--success-color); }
 
@@ -149,6 +150,7 @@
             background-color: var(--input-bg); padding: 8px 16px; border-radius: 20px;
             font-size: 0.85rem; color: var(--primary-color); border: 1px solid var(--border-color); font-weight: 600; letter-spacing: 1px;
         }
+        #status-indicator { font-size: 0.8rem; color: var(--text-muted); margin-left: 10px; font-weight: normal; }
 
         .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; min-width: 900px; }
@@ -192,6 +194,12 @@
         .btn-restore { color: var(--success-color); border-color: rgba(52, 211, 153, 0.3); }
         .btn-restore:hover { background-color: var(--success-color); color: #0f172a; border-color: var(--success-color); }
         
+        #config-alert {
+            display: none; background-color: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--error-color); color: #fca5a5; padding: 15px;
+            border-radius: 8px; margin-bottom: 20px; text-align: center;
+        }
+
         footer { margin-top: auto; padding-top: 30px; color: var(--text-muted); font-size: 0.8rem; opacity: 0.6; text-align: center; letter-spacing: 1px; }
 
         @media (max-width: 600px) {
@@ -205,9 +213,16 @@
 <body>
 
     <div class="main-container">
+        
+        <!-- Warning if config is missing -->
+        <div id="config-alert">
+            <strong>⚠️ Database Connection Required</strong><br>
+            Please edit the file and paste your Firebase Keys (lines 375-383) to enable Cloud Syncing.
+        </div>
+
         <header>
             <h1 class="clinic-name">Clinica Aesthetico</h1>
-            <div class="app-title">Logbook</div>
+            <div class="app-title">Logbook <span id="status-indicator">● Connecting...</span></div>
         </header>
 
         <!-- Navigation Tabs -->
@@ -252,6 +267,7 @@
                             </tr>
                         </thead>
                         <tbody id="logbook-body">
+                            <tr><td colspan="15" style="text-align:center; padding:30px;">Loading data from cloud...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -276,6 +292,7 @@
                             </tr>
                         </thead>
                         <tbody id="history-body">
+                             <tr><td colspan="3" style="text-align:center; padding:30px;">Loading history...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -287,175 +304,255 @@
         </footer>
     </div>
 
-    <script>
-        // --- GLOBAL CONFIG ---
-        const STORAGE_KEY = 'consultationLogbookData';
-        const ARCHIVE_KEY = 'consultationArchiveData';
+    <!-- FIREBASE INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp, doc, writeBatch } 
+        from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+        // ==========================================================
+        // 🔴 FIREBASE KEYS CONFIGURED
+        // ==========================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKaIoNjF3gXn6ggrJVS4Qk2y2jv-zXo-g",
+            authDomain: "clinica-aesthetico.firebaseapp.com",
+            projectId: "clinica-aesthetico",
+            storageBucket: "clinica-aesthetico.firebasestorage.app",
+            messagingSenderId: "244265104800",
+            appId: "1:244265104800:web:d95ed448397c62c1a8e0c5",
+            measurementId: "G-JRV6QKQHE5"
+        };
+        // ==========================================================
+
         const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const currentYear = new Date().getFullYear();
         
         let allConsultations = [];
         let archivedConsultations = [];
+        let db;
 
         // --- INIT ---
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            setupForm();
-            renderLogbook();
-            renderHistory();
-        });
-
-        // --- TABS LOGIC ---
-        function switchTab(tabName) {
-            // Update Buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Update Sections
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(`${tabName}-view`).classList.add('active');
+        
+        // Check if config is pasted
+        if (firebaseConfig.apiKey.includes("PASTE_YOUR")) {
+            document.getElementById('config-alert').style.display = 'block';
+            document.getElementById('status-indicator').textContent = "● No Connection";
+            document.getElementById('status-indicator').style.color = "var(--error-color)";
+        } else {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                startListening();
+            } catch (error) {
+                console.error("Firebase Init Error:", error);
+                document.getElementById('status-indicator').textContent = "● Error";
+            }
         }
 
-        // --- DATA HANDLING ---
-        function loadData() {
-            // Load Active
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) { try { allConsultations = JSON.parse(stored); } catch (e) { allConsultations = []; } }
-            
-            // Load History
-            const archived = localStorage.getItem(ARCHIVE_KEY);
-            if (archived) { try { archivedConsultations = JSON.parse(archived); } catch (e) { archivedConsultations = []; } }
+        // Setup Form
+        const dateInput = document.getElementById('consultation-date');
+        dateInput.value = new Date().toISOString().split('T')[0];
+        document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
+        document.getElementById('current-year-display').textContent = `Year: ${currentYear}`;
+        
+        // Expose Functions Globally for Buttons
+        window.switchTab = switchTab;
+        window.clearPatientYear = clearPatientYear;
+        window.deletePatientFully = deletePatientFully;
+        window.restorePatient = restorePatient;
+        window.deleteFromHistory = deleteFromHistory;
+
+        // --- FUNCTIONS ---
+
+        function startListening() {
+            // Listen to Active Records
+            const qActive = query(collection(db, "consultations"));
+            onSnapshot(qActive, (snapshot) => {
+                allConsultations = [];
+                snapshot.forEach((doc) => {
+                    allConsultations.push({ id: doc.id, ...doc.data() });
+                });
+                renderLogbook();
+                document.getElementById('status-indicator').textContent = "● Live Linked";
+                document.getElementById('status-indicator').style.color = "var(--success-color)";
+            });
+
+            // Listen to History Records
+            const qHistory = query(collection(db, "history"));
+            onSnapshot(qHistory, (snapshot) => {
+                archivedConsultations = [];
+                snapshot.forEach((doc) => {
+                    archivedConsultations.push({ id: doc.id, ...doc.data() });
+                });
+                renderHistory();
+            });
         }
 
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(allConsultations));
-            localStorage.setItem(ARCHIVE_KEY, JSON.stringify(archivedConsultations));
-        }
-
-        function setupForm() {
-            const dateInput = document.getElementById('consultation-date');
-            dateInput.value = new Date().toISOString().split('T')[0];
-            document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
-            document.getElementById('current-year-display').textContent = `Year: ${currentYear}`;
-        }
-
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
+            if (!db) return;
+
             const nameInput = document.getElementById('patient-name');
             const dateInput = document.getElementById('consultation-date');
             const messageBox = document.getElementById('message');
+            const btn = e.target.querySelector('button');
 
             const name = nameInput.value.trim();
             const date = dateInput.value;
 
             if (!name || !date) return;
 
-            allConsultations.push({ name, date });
-            saveData();
-            
-            messageBox.textContent = `✓ Saved: ${name}`;
-            setTimeout(() => messageBox.textContent = '', 3000);
+            btn.disabled = true;
+            btn.textContent = "Saving...";
 
-            nameInput.value = '';
-            nameInput.focus();
-            renderLogbook();
+            try {
+                await addDoc(collection(db, "consultations"), {
+                    name: name,
+                    date: date,
+                    timestamp: serverTimestamp()
+                });
+                
+                messageBox.textContent = `✓ Synced: ${name}`;
+                setTimeout(() => messageBox.textContent = '', 3000);
+                nameInput.value = '';
+                nameInput.focus();
+
+            } catch (error) {
+                console.error("Write Error:", error);
+                messageBox.textContent = "Error saving. Check console.";
+                messageBox.style.color = "var(--error-color)";
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Add Entry";
+            }
+        }
+
+        // --- TABS LOGIC ---
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            // Find the button that was clicked (approximate since window.event is used inline)
+            // Simpler: just loop and check text or assume event bubbling. 
+            // For simplicity in this structure:
+            if(tabName === 'active') document.querySelector('.tab-btn:first-child').classList.add('active');
+            else document.querySelector('.tab-btn:last-child').classList.add('active');
+
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`${tabName}-view`).classList.add('active');
         }
 
         // --- ACTION 1: CLEAR YEAR (Keeps Name) ---
-        function clearPatientYear(patientName) {
-            if (!confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?\n\nThis resets the counts to 0 but KEEPS the name in the list.`)) {
-                return;
-            }
+        async function clearPatientYear(patientName) {
+            if (!db || !confirm(`Clear ONLY ${currentYear} entries for "${patientName}"?\n\nThis resets the counts to 0 but KEEPS the name in the list.`)) return;
 
-            allConsultations = allConsultations.filter(rec => {
-                const recName = rec.name.trim().toUpperCase();
-                const targetName = patientName.trim().toUpperCase();
-                
-                if (recName === targetName) {
-                    if (rec.date === 'PLACEHOLDER') return true;
-                    const d = new Date(rec.date + 'T00:00:00');
-                    if (!isNaN(d) && d.getFullYear() === currentYear) return false; 
-                }
-                return true; 
+            // 1. Find docs to delete (Matching Name + Year)
+            const toDelete = allConsultations.filter(rec => {
+                if (rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()) return false;
+                if (rec.date === 'PLACEHOLDER') return false; // Don't delete existing placeholders yet
+                const d = new Date(rec.date + 'T00:00:00');
+                return (!isNaN(d) && d.getFullYear() === currentYear);
             });
 
-            const patientExists = allConsultations.some(rec => 
-                rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
-            );
+            // 2. Find if any docs would REMAIN for this patient
+            const others = allConsultations.filter(rec => {
+                return rec.name.trim().toUpperCase() === patientName.trim().toUpperCase() && 
+                       !toDelete.includes(rec);
+            });
 
-            if (!patientExists) {
-                allConsultations.push({ name: patientName, date: 'PLACEHOLDER' });
+            const batch = writeBatch(db);
+
+            // 3. Delete the year's records
+            toDelete.forEach(rec => {
+                batch.delete(doc(db, "consultations", rec.id));
+            });
+
+            // 4. If no records remain, add a placeholder
+            if (others.length === 0) {
+                const newRef = doc(collection(db, "consultations"));
+                batch.set(newRef, { name: patientName, date: 'PLACEHOLDER', timestamp: serverTimestamp() });
             }
 
-            saveData();
-            renderLogbook();
+            try {
+                await batch.commit();
+            } catch(e) { console.error(e); alert("Error clearing records."); }
         }
 
         // --- ACTION 2: DELETE NAME (Moves to History) ---
-        function deletePatientFully(patientName) {
-            if (!confirm(`⚠️ DELETE "${patientName}"?\n\nThis will remove them from the active list and move them to the "Deleted History" tab.`)) {
-                return;
-            }
+        async function deletePatientFully(patientName) {
+            if (!db || !confirm(`⚠️ DELETE "${patientName}"?\n\nThis will move them to History.`)) return;
 
-            // Identify records to move
-            const recordsToArchive = allConsultations.filter(rec => 
+            // Find ALL active records for patient
+            const toMove = allConsultations.filter(rec => 
                 rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
             );
 
-            // Add to archive
-            archivedConsultations = [...archivedConsultations, ...recordsToArchive];
+            const batch = writeBatch(db);
 
-            // Remove from active
-            allConsultations = allConsultations.filter(rec => 
-                rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()
-            );
+            toMove.forEach(rec => {
+                // 1. Add to History
+                const historyRef = doc(collection(db, "history")); // New ID
+                batch.set(historyRef, {
+                    name: rec.name,
+                    date: rec.date,
+                    deletedAt: serverTimestamp()
+                });
 
-            saveData();
-            renderLogbook();
-            renderHistory();
+                // 2. Delete from Active
+                batch.delete(doc(db, "consultations", rec.id));
+            });
+
+            try {
+                await batch.commit();
+            } catch(e) { console.error(e); alert("Error deleting patient."); }
         }
 
-        // --- ACTION 3: RESTORE (From History to Active) ---
-        function restorePatient(patientName) {
-            if (!confirm(`Restore "${patientName}" to the active logbook?`)) {
-                return;
-            }
+        // --- ACTION 3: RESTORE ---
+        async function restorePatient(patientName) {
+            if (!db || !confirm(`Restore "${patientName}" to Active?`)) return;
 
-            // Identify records to restore
-            const recordsToRestore = archivedConsultations.filter(rec => 
+            const toRestore = archivedConsultations.filter(rec => 
                 rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
             );
 
-            // Add back to active
-            allConsultations = [...allConsultations, ...recordsToRestore];
+            const batch = writeBatch(db);
 
-            // Remove from archive
-            archivedConsultations = archivedConsultations.filter(rec => 
-                rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()
-            );
+            toRestore.forEach(rec => {
+                // 1. Add back to Active
+                const activeRef = doc(collection(db, "consultations"));
+                batch.set(activeRef, {
+                    name: rec.name,
+                    date: rec.date,
+                    timestamp: serverTimestamp()
+                });
 
-            saveData();
-            renderLogbook();
-            renderHistory();
-            alert(`${patientName} has been restored to the Active Logbook.`);
+                // 2. Delete from History
+                batch.delete(doc(db, "history", rec.id));
+            });
+
+            try {
+                await batch.commit();
+                alert("Restored.");
+            } catch(e) { console.error(e); alert("Error restoring."); }
         }
 
-        // --- ACTION 4: PERMANENT DELETE (From History) ---
-        function deleteFromHistory(patientName) {
-            if (!confirm(`Are you sure you want to PERMANENTLY delete "${patientName}" from history?\n\nThis cannot be undone.`)) {
-                return;
-            }
+        // --- ACTION 4: DELETE FOREVER ---
+        async function deleteFromHistory(patientName) {
+            if (!db || !confirm(`PERMANENTLY DELETE "${patientName}"?\n\nThis cannot be undone.`)) return;
 
-            // Filter out records for this patient
-            archivedConsultations = archivedConsultations.filter(rec => 
-                rec.name.trim().toUpperCase() !== patientName.trim().toUpperCase()
+            const toDelete = archivedConsultations.filter(rec => 
+                rec.name.trim().toUpperCase() === patientName.trim().toUpperCase()
             );
 
-            saveData();
-            renderHistory();
+            const batch = writeBatch(db);
+            toDelete.forEach(rec => {
+                batch.delete(doc(db, "history", rec.id));
+            });
+
+            try {
+                await batch.commit();
+            } catch(e) { console.error(e); alert("Error deleting."); }
         }
 
-        // --- RENDER FUNCTIONS ---
+        // --- RENDER FUNCTIONS (Same logic as before) ---
         function calculateSummary(records) {
             const counts = {};
             let total = 0;
@@ -476,7 +573,6 @@
             const tbody = document.getElementById('logbook-body');
             const theadRow = document.querySelector('#logbook-table thead tr');
             
-            // Group by Name
             const patients = allConsultations.reduce((acc, curr) => {
                 const key = curr.name.trim(); 
                 const upperKey = key.toUpperCase();
@@ -501,7 +597,7 @@
                 const row = tbody.insertRow();
                 const cell = row.insertCell();
                 cell.colSpan = 15;
-                cell.textContent = "No active records.";
+                cell.textContent = "No active records found.";
                 cell.style.textAlign = "center"; cell.style.padding = "30px"; cell.style.color = "var(--text-muted)";
                 return;
             }
