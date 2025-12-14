@@ -114,21 +114,19 @@
             width: 100%; overflow: hidden;
         }
 
-        /* --- INPUTS (NO GRAY) --- */
+        /* --- INPUTS --- */
         #consultation-form { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; }
         
         input, select {
             width: 100%; padding: 15px 20px; 
-            background-color: var(--input-bg); /* Dark Green Background */
+            background-color: var(--input-bg);
             border: 1px solid var(--border-color); border-radius: 12px; 
             font-size: 1rem; color: var(--text-main); 
             transition: all 0.3s; outline: none; font-family: 'Inter', sans-serif;
         }
         input:focus, select:focus { border-color: var(--primary-color); background-color: #00221a; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
-        
-        /* Dropdown Options Fix */
         option { background-color: #011c16; color: var(--text-main); } 
 
         button.submit-btn {
@@ -202,6 +200,19 @@
         .online-user-card { display: flex; align-items: center; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); color: var(--text-main); font-weight: 500; }
         .online-user-card .dot { width: 10px; height: 10px; background: #4ade80; border-radius: 50%; margin-right: 15px; box-shadow: 0 0 10px #4ade80; }
 
+        /* --- ROLE SELECTION STYLES --- */
+        .role-btn-container { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+        .role-btn {
+            flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);
+            background: transparent; color: var(--text-muted); cursor: pointer;
+            font-weight: 600; transition: all 0.2s;
+        }
+        .role-btn.selected { background: var(--primary-color); color: #011c16; border-color: var(--primary-color); }
+        #pin-input-container { display: none; margin-bottom: 20px; }
+        
+        .owner-crown { color: var(--warning-color); margin-left: 5px; font-size: 1.1em; }
+        .owner-badge { border-color: var(--warning-color) !important; color: var(--warning-color) !important; }
+
         #config-alert { display: none; background-color: rgba(239, 68, 68, 0.2); border: 1px solid var(--error-color); color: #fca5a5; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
         footer { margin-top: auto; padding-top: 40px; color: var(--text-muted); font-size: 0.75rem; opacity: 0.5; text-align: center; letter-spacing: 2px; text-transform: uppercase; }
 
@@ -211,28 +222,13 @@
             .clinic-name { font-size: 2.8rem; margin-top: 60px; } 
             .profile-corner { position: absolute; top: 15px; right: 15px; flex-direction: row; justify-content: flex-end; width: auto; z-index: 100; }
             #consultation-form { display: block; }
-            
-            /* MOBILE FIXES */
             .form-group { width: 100%; margin-bottom: 20px; min-width: 0; }
             input, select { 
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
-                margin: 0;
-                box-sizing: border-box; /* Strict containment */
-                padding: 12px 15px;
+                width: 100%; max-width: 100%; min-width: 0; margin: 0;
+                box-sizing: border-box; padding: 12px 15px;
             }
-
-            /* Specific fix for Date Box: 75% width on mobile */
-            input[type="date"] {
-                width: 75% !important;
-                margin: 0 auto !important; /* Center it */
-                display: block;
-            }
-            
-            /* Fix login modal input spacing */
-            #staff-name-input { margin-bottom: 25px !important; width: 100% !important; }
-
+            input[type="date"] { width: 75% !important; margin: 0 auto !important; display: block; }
+            #staff-name-input, #site-pin { margin-bottom: 25px !important; width: 100% !important; }
             button.submit-btn { width: 100%; }
             .card { padding: 20px; }
             .table-header { flex-direction: column; align-items: flex-start; gap: 15px; }
@@ -260,13 +256,23 @@
         </div>
     </div>
 
-    <!-- LOGIN MODAL -->
+    <!-- LOGIN MODAL (UPDATED) -->
     <div id="login-modal" style="display: none;">
         <div class="modal-content">
-            <h2 class="modal-title" style="color:var(--primary-color);">Staff Check-In</h2>
-            <p style="color:var(--text-muted); margin-bottom:30px; font-size: 1.1rem;">Who is accessing the system today?</p>
+            <h2 class="modal-title" style="color:var(--primary-color);">Who are you?</h2>
+            
+            <div class="role-btn-container">
+                <button class="role-btn selected" id="role-staff" onclick="selectRole('Staff')">Staff</button>
+                <button class="role-btn" id="role-owner" onclick="selectRole('Owner')">Owner 👑</button>
+            </div>
+
+            <div id="pin-input-container">
+                <input type="password" id="owner-pin-input" placeholder="Owner PIN" maxlength="4" inputmode="numeric" style="text-align:center;">
+            </div>
+
             <input type="text" id="staff-name-input" placeholder="Enter your name..." style="margin-bottom: 25px; text-align: center; font-size: 1.2rem;">
-            <button class="submit-btn" onclick="saveStaffName()">Start Session</button>
+            <button class="submit-btn" onclick="attemptLogin()">Start Session</button>
+            <p id="login-error" style="color: var(--error-color); display: none; margin-top: 15px;"></p>
         </div>
     </div>
 
@@ -276,8 +282,9 @@
             <button class="close-edit" onclick="closeEditModal()">×</button>
             <h3 style="font-family:'Playfair Display', serif; font-size:1.8rem; margin-top:0; color:var(--text-main);">Edit Patient</h3>
             
-            <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
-                <label style="display:block; color:var(--text-muted); font-size:0.8rem; margin-bottom:10px;">RENAME</label>
+            <!-- Rename Only for Owner -->
+            <div id="rename-section" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display:none;">
+                <label style="display:block; color:var(--text-muted); font-size:0.8rem; margin-bottom:10px;">RENAME PATIENT</label>
                 <div style="display:flex; gap:10px;">
                     <input type="text" id="edit-name-input" placeholder="Patient Name">
                     <button class="action-btn btn-edit" onclick="saveRename()" style="min-width: 80px;">Save</button>
@@ -312,7 +319,7 @@
                 <button class="profile-pill" onclick="toggleSidebar()">
                     <span class="pulse-dot"></span> Online
                 </button>
-                <button class="profile-pill" onclick="changeUser()" style="background-color: rgba(2, 44, 34, 0.6); border-color: transparent;">
+                <button class="profile-pill" id="user-profile-pill" onclick="changeUser()" style="background-color: rgba(2, 44, 34, 0.6); border-color: transparent;">
                     <span id="current-user-name">Guest</span>
                     <span style="opacity:0.5; font-size:0.7em;">▼</span>
                 </button>
@@ -367,7 +374,6 @@
                         <thead>
                             <tr>
                                 <th class="sticky-col">Patient Name</th>
-                                <!-- Months inserted by JS -->
                                 <th class="total-col">TOTAL</th>
                                 <th>Actions</th>
                             </tr>
@@ -427,58 +433,101 @@
         };
 
         const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const SITE_PIN = "1234";  // General Site Access PIN
+        const OWNER_PIN = "0000"; // Specific Owner PIN
+
         let selectedYear = new Date().getFullYear();
         let allConsultations = [];
         let archivedConsultations = [];
         let db;
         let currentUser = null;
+        let currentUserRole = "Staff"; // "Staff" or "Owner"
         let sessionId = localStorage.getItem('clinica_session_id') || crypto.randomUUID(); 
         localStorage.setItem('clinica_session_id', sessionId);
         let currentEditName = null;
         
-        // --- SECURITY PIN ---
-        const ADMIN_PIN = "1234"; // Default PIN
-
         // --- SITE LOCK ---
         window.checkSiteAccess = function() {
             const input = document.getElementById('site-pin').value;
-            if (input === ADMIN_PIN) {
+            if (input === SITE_PIN) {
                 document.getElementById('lock-screen').style.display = 'none';
                 document.querySelector('.main-container').classList.add('unlocked');
-                checkUserIdentity(); // Start normal app flow
+                checkUserIdentity(); 
             } else {
                 document.getElementById('lock-error').style.display = 'block';
             }
         }
 
+        // --- AUTHENTICATION ---
         function checkUserIdentity() {
             const savedName = localStorage.getItem('clinica_user_name');
+            const savedRole = localStorage.getItem('clinica_user_role') || 'Staff';
+            
             if (savedName) {
-                currentUser = savedName;
-                document.getElementById('current-user-name').textContent = currentUser;
-                document.getElementById('login-modal').style.display = 'none';
-                updatePresence(); 
+                setUser(savedName, savedRole);
             } else {
                 document.getElementById('login-modal').style.display = 'flex';
             }
         }
 
-        window.saveStaffName = function() {
-            const input = document.getElementById('staff-name-input');
-            const name = input.value.trim();
-            if (name) {
-                localStorage.setItem('clinica_user_name', name);
-                currentUser = name;
-                document.getElementById('current-user-name').textContent = name;
-                document.getElementById('login-modal').style.display = 'none';
-                updatePresence();
-            } else { alert("Please enter a name."); }
+        window.selectRole = function(role) {
+            currentUserRole = role;
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('selected'));
+            if(role === 'Staff') {
+                document.getElementById('role-staff').classList.add('selected');
+                document.getElementById('pin-input-container').style.display = 'none';
+            } else {
+                document.getElementById('role-owner').classList.add('selected');
+                document.getElementById('pin-input-container').style.display = 'block';
+            }
+        }
+
+        window.attemptLogin = function() {
+            const name = document.getElementById('staff-name-input').value.trim();
+            const errorMsg = document.getElementById('login-error');
+            
+            if (!name) {
+                errorMsg.textContent = "Please enter your name.";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (currentUserRole === 'Owner') {
+                const pin = document.getElementById('owner-pin-input').value;
+                if (pin !== OWNER_PIN) {
+                    errorMsg.textContent = "Incorrect Owner PIN.";
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+            }
+
+            // Success
+            localStorage.setItem('clinica_user_name', name);
+            localStorage.setItem('clinica_user_role', currentUserRole);
+            document.getElementById('login-modal').style.display = 'none';
+            setUser(name, currentUserRole);
+        }
+
+        function setUser(name, role) {
+            currentUser = name;
+            currentUserRole = role;
+            
+            const displayHTML = role === 'Owner' ? `${name} <span class="owner-crown">👑</span>` : name;
+            const profilePill = document.getElementById('user-profile-pill');
+            document.getElementById('current-user-name').innerHTML = displayHTML;
+
+            if (role === 'Owner') profilePill.classList.add('owner-badge');
+            else profilePill.classList.remove('owner-badge');
+
+            updatePresence();
+            renderLogbook(); // Re-render to update button visibility
         }
 
         window.changeUser = async function() {
             if(confirm("Switch user on this device?")) {
                 if(db && sessionId) { try { await deleteDoc(doc(db, "presence", sessionId)); } catch(e) {} }
                 localStorage.removeItem('clinica_user_name');
+                localStorage.removeItem('clinica_user_role');
                 location.reload(); 
             }
         }
@@ -510,7 +559,7 @@
         document.getElementById('consultation-form').addEventListener('submit', handleFormSubmit);
         
         initYearSelector();
-        // checkUserIdentity(); // Moved to checkSiteAccess
+        // checkUserIdentity handled by lock screen flow
 
         window.switchTab = switchTab;
         window.clearPatientYear = clearPatientYear;
@@ -543,7 +592,7 @@
         async function updatePresence() {
             if (!db || !currentUser) return;
             const presenceRef = doc(db, "presence", sessionId);
-            try { await setDoc(presenceRef, { user: currentUser, lastSeen: serverTimestamp() }, { merge: true }); } catch (e) {}
+            try { await setDoc(presenceRef, { user: currentUser, role: currentUserRole, lastSeen: serverTimestamp() }, { merge: true }); } catch (e) {}
         }
         setInterval(updatePresence, 30000);
         window.addEventListener("beforeunload", () => { if (db && sessionId) deleteDoc(doc(db, "presence", sessionId)); });
@@ -553,11 +602,15 @@
             onSnapshot(q, (snapshot) => {
                 const container = document.getElementById('active-users-list');
                 const activeUsers = new Set();
+                const userRoles = {}; // Map name to role
                 const now = Date.now();
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
                     if (!data.lastSeen || !data.lastSeen.toMillis) return; 
-                    if (now - data.lastSeen.toMillis() < 90 * 1000) activeUsers.add(data.user);
+                    if (now - data.lastSeen.toMillis() < 90 * 1000) {
+                        activeUsers.add(data.user);
+                        userRoles[data.user] = data.role;
+                    }
                 });
                 if (activeUsers.size === 0) {
                     container.innerHTML = '<span style="color:var(--text-muted); font-size:0.9rem;">No active users.</span>';
@@ -566,7 +619,8 @@
                     activeUsers.forEach(user => {
                         const card = document.createElement('div');
                         card.className = 'online-user-card';
-                        card.innerHTML = `<span class="dot"></span> ${user}`;
+                        const crown = userRoles[user] === 'Owner' ? ' 👑' : '';
+                        card.innerHTML = `<span class="dot"></span> ${user}${crown}`;
                         container.appendChild(card);
                     });
                 }
@@ -650,6 +704,15 @@
         function openEditModal(nameKey) {
             currentEditName = nameKey;
             document.getElementById('edit-name-input').value = nameKey;
+            
+            // Show/Hide Rename section based on Role
+            const renameSection = document.getElementById('rename-section');
+            if (currentUserRole === 'Owner') {
+                renameSection.style.display = 'block';
+            } else {
+                renameSection.style.display = 'none';
+            }
+
             const container = document.getElementById('edit-visits-list');
             container.innerHTML = '';
             const visits = allConsultations.filter(rec => {
@@ -658,18 +721,24 @@
                 const d = new Date(rec.date + 'T00:00:00');
                 return !isNaN(d) && d.getFullYear() === selectedYear;
             });
+            
             if(visits.length === 0) { container.innerHTML = '<p style="color:var(--text-muted);">No visits found for this year.</p>'; } 
             else {
                 visits.sort((a, b) => new Date(b.date) - new Date(a.date));
                 visits.forEach(v => {
                     const div = document.createElement('div');
                     div.className = 'visit-row';
+                    
+                    // Logic for Delete button visibility (Owner only for single visits too? User said "Edit" is allowed. Usually deleting a specific bad entry is part of editing, but user said "Delete Name" is restricted. I'll allow Staff to delete single visits to fix mistakes, but keep GLOBAL delete restrictive.)
+                    // User prompt: "Staff allowed to edit". Editing implies fixing mistakes.
+                    const deleteBtnHtml = currentUserRole === 'Owner' || true ? `<button class="action-btn btn-delete" onclick="deleteVisit('${v.id}')">Delete</button>` : ''; 
+                    
                     div.innerHTML = `
                         <div class="visit-info"><strong>${v.date}</strong> <span style="font-size:0.8em; opacity:0.7;">(Added by: ${v.addedBy || '?'})</span></div>
                         <div class="visit-actions">
                             <input type="date" value="${v.date}" id="date-${v.id}" style="padding:5px; font-size:0.8rem; width:130px;">
                             <button class="action-btn btn-edit" onclick="updateVisitDate('${v.id}')">Save</button>
-                            <button class="action-btn btn-delete" onclick="deleteVisit('${v.id}')">Delete</button>
+                            ${deleteBtnHtml}
                         </div>`;
                     container.appendChild(div);
                 });
@@ -680,6 +749,7 @@
         function closeEditModal() { document.getElementById('edit-modal').style.display = 'none'; currentEditName = null; }
 
         async function saveRename() {
+            // Only Owner reaches here due to UI hiding
             const newName = document.getElementById('edit-name-input').value.trim();
             if(!newName || !currentEditName || newName === currentEditName) return;
             if(!confirm(`Rename "${currentEditName}" to "${newName}" for ALL records?`)) return;
@@ -700,6 +770,7 @@
             try { await deleteDoc(doc(db, "consultations", id)); openEditModal(currentEditName); } catch(e) { alert("Error deleting visit."); }
         }
 
+        // --- RESTRICTED ACTIONS (OWNER ONLY) ---
         async function clearPatientYear(patientName) {
             if (!db || !confirm(`Clear ONLY ${selectedYear} entries for "${patientName}"?`)) return;
             const toDelete = allConsultations.filter(rec => {
@@ -730,6 +801,7 @@
             try { await batch.commit(); } catch(e) { alert("Error."); }
         }
 
+        // Owner only history actions
         async function restorePatient(patientName) {
             if (!db || !confirm(`Restore "${patientName}"?`)) return;
             const toRestore = archivedConsultations.filter(rec => rec.name.trim().toUpperCase() === patientName.trim().toUpperCase());
@@ -808,26 +880,35 @@
                 const actionCell = row.insertCell();
                 const btnContainer = document.createElement('div'); btnContainer.className = 'action-cell';
                 
+                // --- PERMISSION LOGIC ---
+                
+                // Everyone can Edit
                 const editBtn = document.createElement('button');
                 editBtn.textContent = "Edit"; editBtn.className = "action-btn btn-edit";
                 editBtn.onclick = function() { openEditModal(nameKey); };
+                btnContainer.appendChild(editBtn);
 
-                const clearBtn = document.createElement('button'); 
-                clearBtn.textContent = "Clear"; clearBtn.className = "action-btn btn-clear";
-                clearBtn.onclick = function() { clearPatientYear(nameKey); };
-                
-                const deleteBtn = document.createElement('button'); 
-                deleteBtn.textContent = "Delete"; deleteBtn.className = "action-btn btn-delete";
-                deleteBtn.onclick = function() { deletePatientFully(nameKey); };
+                // Only Owner can Clear & Delete
+                if (currentUserRole === 'Owner') {
+                    const clearBtn = document.createElement('button'); 
+                    clearBtn.textContent = "Clear"; clearBtn.className = "action-btn btn-clear";
+                    clearBtn.onclick = function() { clearPatientYear(nameKey); };
+                    
+                    const deleteBtn = document.createElement('button'); 
+                    deleteBtn.textContent = "Delete"; deleteBtn.className = "action-btn btn-delete";
+                    deleteBtn.onclick = function() { deletePatientFully(nameKey); };
 
-                btnContainer.appendChild(editBtn); 
-                btnContainer.appendChild(clearBtn); 
-                btnContainer.appendChild(deleteBtn);
+                    btnContainer.appendChild(clearBtn); 
+                    btnContainer.appendChild(deleteBtn);
+                }
+
                 actionCell.appendChild(btnContainer);
             });
         }
 
         function renderHistory() {
+            // Only Owner should see history actions, or maybe everyone can see but only owner can act?
+            // Usually history is admin stuff. I'll let Staff see it but disable buttons.
             const tbody = document.getElementById('history-body');
             const patients = archivedConsultations.reduce((acc, curr) => {
                 const key = curr.name.trim(); const upperKey = key.toUpperCase();
@@ -852,16 +933,24 @@
                 const actionCell = row.insertCell();
                 const btnContainer = document.createElement('div'); btnContainer.className = 'action-cell';
                 
-                const restoreBtn = document.createElement('button'); 
-                restoreBtn.textContent = "Restore"; restoreBtn.className = "action-btn btn-restore";
-                restoreBtn.onclick = function() { restorePatient(nameKey); };
-                
-                const deleteForeverBtn = document.createElement('button'); 
-                deleteForeverBtn.textContent = "Delete Forever"; deleteForeverBtn.className = "action-btn btn-delete";
-                deleteForeverBtn.onclick = function() { deleteFromHistory(nameKey); };
+                if (currentUserRole === 'Owner') {
+                    const restoreBtn = document.createElement('button'); 
+                    restoreBtn.textContent = "Restore"; restoreBtn.className = "action-btn btn-restore";
+                    restoreBtn.onclick = function() { restorePatient(nameKey); };
+                    
+                    const deleteForeverBtn = document.createElement('button'); 
+                    deleteForeverBtn.textContent = "Delete Forever"; deleteForeverBtn.className = "action-btn btn-delete";
+                    deleteForeverBtn.onclick = function() { deleteFromHistory(nameKey); };
 
-                btnContainer.appendChild(restoreBtn); btnContainer.appendChild(deleteForeverBtn);
-                actionCell.appendChild(btnContainer);
+                    btnContainer.appendChild(restoreBtn); btnContainer.appendChild(deleteForeverBtn);
+                } else {
+                    actionCell.textContent = "Restricted";
+                    actionCell.style.fontSize = "0.7rem";
+                    actionCell.style.color = "var(--text-muted)";
+                    actionCell.style.fontStyle = "italic";
+                }
+
+                if(currentUserRole === 'Owner') actionCell.appendChild(btnContainer);
             });
         }
     </script>
